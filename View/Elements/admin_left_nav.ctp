@@ -1,4 +1,6 @@
-
+<?php 
+if (isset($installed)) {
+?>
 <p><b><?php echo $this->Html->link('<i class="fa fa-arrow-left"></i> Go Back To Site', '/DrexCartProducts/index', array('escape'=>false)); ?></b></p>
 
 <h3>Navigation</h3>
@@ -11,3 +13,6 @@
 	
 	
 </ul>
+<?php 
+}
+?>

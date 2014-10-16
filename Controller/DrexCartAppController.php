@@ -19,16 +19,23 @@ class DrexCartAppController extends AppController {
 		
 		// check for installed
 		$installer = new DrexCartInstaller();
+		
 		if ($installer->isInstalled()) {
 			// software is considered installed
-			
+			$this->loadCartInfo();
+			$this->set('installed', true);
 		} else {
 			// software is not considered installed
 			if (strtolower($this->params['controller'])!='drexcartinstall') {
 				$this->redirect('/DrexCartInstall/index');
+				exit;
 			}
 		}
 		
+	}
+	
+	private function loadCartInfo() {
+
 		// get cart information
 		if ($this->Session->check('drexcart_id')) {
 			$this->cart = $this->DrexCartCart->getCart($this->Session->read('drexcart_id'));

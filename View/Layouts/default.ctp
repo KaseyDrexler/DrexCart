@@ -81,7 +81,7 @@
 		<!-- Content End -->
 		<!-- Footer Begin -->
 		<div id="footer">
-			
+			&copy <?php echo $this->Html->link('DrexDesign, LLC', 'http://drexdesign.com'); ?>
 		</div>
 		<!-- Footer End -->
 	</div>

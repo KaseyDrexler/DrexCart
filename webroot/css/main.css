@@ -48,3 +48,10 @@
 	transition:all 0.25s linear;
 	color:#000000;
 }
+
+#footer {
+	position:fixed;
+	width:100%;
+	bottom:0px;
+	text-align:center;
+}
