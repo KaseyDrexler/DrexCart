@@ -7,7 +7,7 @@ class DrexCartProductsController extends DrexCartAppController {
 	var $uses = array('DrexCart.DrexCartProduct');
 	
 	public function index() {
-		$this->set('products', $this->DrexCartProduct->getAllProducts(array('enabled'=>1, 'visible'=>1)));
+		$this->set('products', $this->DrexCartProduct->getAllProducts(array('enabled'=>1, 'visible'=>1, 'quantity>0')));
 	}
 	
 	public function productDetails($product_id=null) {

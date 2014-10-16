@@ -13,4 +13,13 @@ class DrexCartProduct extends AppModel {
 										  'joins'=>array(array('table'=>'drex_cart_product_types', 'alias'=>'DrexCartProductType', 'type'=>'left', 'conditions'=>array('DrexCartProduct.product_types_id=DrexCartProductType.id'))),
 										  'fields'=>array('DrexCartProduct.*', 'DrexCartProductType.*')));
 	}
+	
+	public function getProductQuantity($product_id=null) {
+		$result = $this->find('first', array('conditions'=>array('id'=>(int)$product_id)));
+		if ($result) {
+			return $result['DrexCartProduct']['quantity'];
+		} else {
+			return 0;
+		}
+	}
 }

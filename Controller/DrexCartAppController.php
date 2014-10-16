@@ -39,7 +39,13 @@ class DrexCartAppController extends AppController {
 		// get cart information
 		if ($this->Session->check('drexcart_id')) {
 			$this->cart = $this->DrexCartCart->getCart($this->Session->read('drexcart_id'));
-			$this->cart_products = $this->DrexCartCartProduct->getProducts($this->cart['DrexCartCart']['id']);
+			if ($this->cart) {
+				$this->cart_products = $this->DrexCartCartProduct->getProducts($this->cart['DrexCartCart']['id']);
+			} else {
+				$this->cart = $this->DrexCartCart->createCart($this->Session->check('drexcart_user_id') ? $this->Session->read('drexcart_user_id') : null);
+				$this->Session->write('drexcart_id', $this->cart['DrexCartCart']['id']);
+				$this->cart_products = array();
+			}
 		} else {
 			$this->cart = $this->DrexCartCart->createCart($this->Session->check('drexcart_user_id') ? $this->Session->read('drexcart_user_id') : null);
 			$this->Session->write('drexcart_id', $this->cart['DrexCartCart']['id']);

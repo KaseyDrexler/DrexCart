@@ -79,6 +79,8 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_products` (
   `visible` INT(1) NOT NULL DEFAULT 1,
   `enabled` INT(1) NOT NULL DEFAULT 1,
   `created_date` DATETIME NOT NULL,
+  `quantity` INT(11) NOT NULL,
+  `num_of_views` INT(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_products_product_types1_idx` (`product_types_id` ASC),
   CONSTRAINT `fk_products_product_types1`
@@ -173,6 +175,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+					
 					
 					");
 			return true;

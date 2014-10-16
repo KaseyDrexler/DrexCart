@@ -25,6 +25,14 @@
 		<td colspan="3" style="height:10px;"></td>
 	</tr>
 	<tr>
+		<th>Product Quantity:</th>
+		<td style="width:20px;"></td>
+		<td><?php echo $this->Form->input('quantity', array('label'=>false, 'class'=>'form-control')); ?></td>
+	</tr>
+	<tr>
+		<td colspan="3" style="height:10px;"></td>
+	</tr>
+	<tr>
 		<th>Product Weight:</th>
 		<td style="width:20px;"></td>
 		<td><?php echo $this->Form->input('product_weight', array('label'=>false, 'class'=>'form-control')); ?></td>
