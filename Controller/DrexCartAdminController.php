@@ -47,8 +47,7 @@ class DrexCartAdminController extends DrexCartAppController {
 		if (is_numeric($product_id) && $product_id>0) {
 			$product = $this->DrexCartProduct->getProductById($product_id);
 			$this->set('product', $product);
-			$this->request->data['DrexCartProduct'] = array('rate' => $product['DrexCartProduct']['rate'],
-															'name' => $product['DrexCartProduct']['name']);
+			$this->request->data['DrexCartProduct'] = $product['DrexCartProduct'];
 		}
 		$this->set('product_types', $this->DrexCartProductType->getOptions());
 	}
@@ -82,6 +81,26 @@ class DrexCartAdminController extends DrexCartAppController {
 			}
 			$this->layout = 'min';
 			$this->set('type', $type);
+		}
+	}
+	
+	public function productTypesView() {
+		$this->set('product_types', $this->DrexCartProductType->find('all'));
+	}
+	public function productTypesEdit($product_types_id=null) {
+		if (!empty($this->request->data)) {
+			if ($product_types_id) {
+				$this->DrexCartProductType->id = (int)$product_types_id;
+			} else {
+				$this->DrexCartProductType->id = null;
+				$this->request->data['DrexCartProductType']['product_type'] = $this->request->data['DrexCartProductType']['product_type_name'];
+			}
+			$this->DrexCartProductType->save($this->request->data);
+			$this->Session->setFlash('Product type updated', 'default', array('class'=>'alert alert-success')); 
+		} else {
+			if ($product_types_id) {
+				$this->request->data = $this->DrexCartProductType->find('first', array('conditions'=>array('id'=>$product_types_id)));
+			}
 		}
 	}
 	

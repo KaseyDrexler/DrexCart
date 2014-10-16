@@ -4,7 +4,7 @@ echo $this->Html->image('drexcart/'.$image_url, array('style'=>'width:200px;heig
 
 ?>
 <script type="text/javascript">
-alert('here');
+
 $(document).ready(function () {
 
 	<?php 
@@ -15,7 +15,7 @@ $(document).ready(function () {
 	} else {
 	?>
 		parent.document.getElementById('main_image').value = '<?php echo $image_url; ?>';
-		alert('here');
+		
 	<?php 
 	}
 	?>

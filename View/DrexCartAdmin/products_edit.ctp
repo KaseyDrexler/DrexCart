@@ -25,21 +25,41 @@
 		<td colspan="3" style="height:10px;"></td>
 	</tr>
 	<tr>
+		<th>Product Weight:</th>
+		<td style="width:20px;"></td>
+		<td><?php echo $this->Form->input('product_weight', array('label'=>false, 'class'=>'form-control')); ?></td>
+	</tr>
+	<tr>
+		<td colspan="3" style="height:10px;"></td>
+	</tr>
+	<tr>
 		<th>Product Type</th>
 		<td style="width:20px;"></td>
 		<td><?php echo $this->Form->select('product_types_id', $product_types, array('empty'=>false, 'label'=>false, 'class'=>'form-control')); ?>
 		
-		<?php echo $this->Js->submit('Save', array('url'=>'/DrexCartAdmin/productsEdit/'.(isset($product) ? $product['DrexCartProduct']['id'] : ''),
+		</td>
+	</tr>
+	<tr>
+		<td colspan="3" style="height:10px;"></td>
+	</tr>
+	<tr>
+		<th>Status</th>
+		<td style="width:20px;"></td>
+		<td>Visible <?php echo $this->Form->checkbox('visible', array('checked'=>(!empty($this->request->data) && $this->request->data['DrexCartProduct']['visible']==1) ? 'checked' : '', 'label'=>true, 'class'=>'form-control')); ?>
+		Enabled <?php echo $this->Form->checkbox('enabled', array('checked'=>(!empty($this->request->data) && $this->request->data['DrexCartProduct']['enabled']==1) ? 'checked' : '', 'label'=>true, 'class'=>'form-control')); ?>
+		</td>
+	</tr>
+	
+	</table>
+	<?php echo $this->Form->hidden('main_image', array('id'=>'main_image')); ?>
+	<?php echo $this->Form->hidden('main_thumb_image', array('id'=>'main_image_thumb')); ?>
+	<?php echo $this->Js->submit('Save', array('url'=>'/DrexCartAdmin/productsEdit/'.(isset($product) ? $product['DrexCartProduct']['id'] : ''),
 										   'update'=>'#panel_right',
 										   'class'=>'btn btn-primary',
 										   'buffer'=>false,
 										   'complete'=>$this->Js->request('/DrexCartAdmin/productsList', array('update'=>'#panel_content', 'async'=>false, 'buffer'=>false)))); ?>
 
-		</td>
-	</tr>
-	</table>
-	<?php echo $this->Form->hidden('main_image', array('id'=>'main_image')); ?>
-	<?php echo $this->Form->hidden('main_thumb_image', array('id'=>'main_image_thumb')); ?>
+		
 	<?php echo $this->Form->end(); ?>
 	<table class="well well-light" width="100%">
 	<tr>

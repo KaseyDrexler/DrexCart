@@ -12,6 +12,8 @@ class DrexCartAppController extends AppController {
 			'Js' => array('Jquery')
 	);
 	
+	public $uses = array('DrexCart.DrexCartCart', 'DrexCart.DrexCartCartProduct');
+	
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
@@ -26,6 +28,19 @@ class DrexCartAppController extends AppController {
 				$this->redirect('/DrexCartInstall/index');
 			}
 		}
+		
+		// get cart information
+		if ($this->Session->check('drexcart_id')) {
+			$this->cart = $this->DrexCartCart->getCart($this->Session->read('drexcart_id'));
+			$this->cart_products = $this->DrexCartCartProduct->getProducts($this->cart['DrexCartCart']['id']);
+		} else {
+			$this->cart = $this->DrexCartCart->createCart($this->Session->check('drexcart_user_id') ? $this->Session->read('drexcart_user_id') : null);
+			$this->Session->write('drexcart_id', $this->cart['DrexCartCart']['id']);
+			$this->cart_products = array();
+		}
+		// set variables for views too
+		$this->set('cart', $this->cart);
+		$this->set('cart_products', $this->cart_products);
 	}
 	
 	
