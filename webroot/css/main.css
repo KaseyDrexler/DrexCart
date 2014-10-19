@@ -49,6 +49,13 @@
 	color:#000000;
 }
 
+.error-message {
+	background-color:#ffeeee;
+	color:#990000;
+	font-weight:bold;
+	padding:10px;
+}
+
 #footer {
 	position:fixed;
 	width:100%;

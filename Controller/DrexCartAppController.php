@@ -2,6 +2,7 @@
 
 
 App::uses('DrexCartInstaller', 'DrexCart.DrexCartLib');
+App::uses('DrexCartFunctions', 'DrexCart.DrexCartLib');
 
 class DrexCartAppController extends AppController {
 	
@@ -31,6 +32,10 @@ class DrexCartAppController extends AppController {
 				exit;
 			}
 		}
+		
+		// global functions
+		$this->DCFunctions = new DrexCartFunctions();
+		$this->set('DCFunctions', $this->DCFunctions);
 		
 	}
 	

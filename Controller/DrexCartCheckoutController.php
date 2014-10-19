@@ -2,6 +2,8 @@
 
 class DrexCartCheckoutController extends DrexCartAppController {
 	
+	public $uses = array('DrexCart.DrexCartOrder', 'DrexCart.DrexCartUser');
+	
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
@@ -13,6 +15,52 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	}
 	
 	public function index() {
+		
+		if (!empty($this->request->data)) {
+			
+			$unvalidated = array();
+			
+			if ($this->request->data['DrexCartOrder']['create_user']==0) {
+				$this->DrexCartUser->validate['email'] = null;
+				$this->DrexCartUser->validate['password'] = null;
+			} else {
+				$this->DrexCartUser->set($this->request->data);
+				if ($this->DrexCartUser->validates()) {
+					$this->Session->write('DrexCartUser', $this->request->data['DrexCartUser']);
+				} else {
+					
+					$unvalidated = array_merge($this->DrexCartUser->validationErrors);
+				}
+			}
+			
+			$this->DrexCartOrder->set($this->request->data);
+			if ($this->DrexCartOrder->validates()) {
+				
+				$this->Session->write('DrexCartOrder', $this->request->data['DrexCartOrder']);
+			} else {
+				
+				$unvalidated = array_merge($this->DrexCartUser->validationErrors);
+			}
+			
+			
+			if ($unvalidated) {
+				$this->set('unvalidated', $unvalidated);
+			} else {
+				$this->redirect('/DrexCartCheckout/verify');
+			}
+		}
+		
+		
+		// check for existing order information
+		if ($this->Session->check('DrexCartOrder')) {
+			$this->request->data['DrexCartOrder'] = $this->Session->read('DrexCartOrder');
+		}
+		if ($this->Session->check('DrexCartUser')) {
+			$this->request->data['DrexCartUser'] = $this->Session->read('DrexCartUser');
+		}
+	}
+	
+	public function verify () {
 		
 	}
 	

@@ -22,6 +22,8 @@
 	}
 	?>
 </table>
+
+<p class="text-right"><?php echo $this->Html->link('Checkout', '/DrexCartCheckout/index', array('class'=>'btn btn-warning')); ?></p>
 <?php 
 //echo 'Cart:';
 //pr($cart);
