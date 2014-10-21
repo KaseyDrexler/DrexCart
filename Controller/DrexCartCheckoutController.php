@@ -7,7 +7,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
-		if (sizeof($this->cart_products)==0) {
+		if (sizeof($this->cart->getProducts())==0) {
 			$this->Session->setFlash('You must have products in your cart to checkout!', 'default', array('class'=>'alert alert-danger'));
 			$this->redirect('/DrexCartCarts/cart');
 			exit;
@@ -65,6 +65,8 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	
 	public function verify () {
 		if (!empty($this->request->data)) { 
+			
+			$this->cart->createOrder();
 			// attempt charge
 			
 			// save customer

@@ -3,6 +3,7 @@
 
 App::uses('DrexCartInstaller', 'DrexCart.DrexCartLib');
 App::uses('DrexCartFunctions', 'DrexCart.DrexCartLib');
+App::uses('DrexCartShoppingCart', 'DrexCart.DrexCartLib');
 
 class DrexCartAppController extends AppController {
 	
@@ -41,24 +42,15 @@ class DrexCartAppController extends AppController {
 	
 	private function loadCartInfo() {
 
-		// get cart information
-		if ($this->Session->check('drexcart_id')) {
-			$this->cart = $this->DrexCartCart->getCart($this->Session->read('drexcart_id'));
-			if ($this->cart) {
-				$this->cart_products = $this->DrexCartCartProduct->getProducts($this->cart['DrexCartCart']['id']);
-			} else {
-				$this->cart = $this->DrexCartCart->createCart($this->Session->check('drexcart_user_id') ? $this->Session->read('drexcart_user_id') : null);
-				$this->Session->write('drexcart_id', $this->cart['DrexCartCart']['id']);
-				$this->cart_products = array();
-			}
+		if ($this->Session->check('shopping_cart')) {
+			$this->cart = $this->Session->read('shopping_cart');
 		} else {
-			$this->cart = $this->DrexCartCart->createCart($this->Session->check('drexcart_user_id') ? $this->Session->read('drexcart_user_id') : null);
-			$this->Session->write('drexcart_id', $this->cart['DrexCartCart']['id']);
-			$this->cart_products = array();
+			$this->cart = new DrexCartShoppingCart();
+			$this->Session->write('shopping_cart', $this->cart);
 		}
-		// set variables for views too
+		
 		$this->set('cart', $this->cart);
-		$this->set('cart_products', $this->cart_products);
+		$this->set('cart_products', $this->cart->getProducts());
 	}
 	
 	

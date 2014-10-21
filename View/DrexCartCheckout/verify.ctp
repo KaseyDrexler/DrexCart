@@ -35,3 +35,14 @@
 		</div>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-11">
+	
+	</div>
+	<div class="col-md-1">
+		<?php echo $this->Form->create(); ?>
+		<?php echo $this->Form->hidden('test'); ?>
+		<?php echo $this->Form->button('Submit Order', array('class'=>'btn btn-warning')); ?>
+		<?php echo $this->Form->end(); ?>
+	</div>
+</div>
