@@ -13,4 +13,5 @@ class DrexCartCart extends AppModel {
 	public function getCart($drex_cart_id=null) {
 		return $this->find('first', array('conditions'=>array('id'=>(int)$drex_cart_id)));
 	}
+	
 }

@@ -1,0 +1,1 @@
+<?php echo $this->element('DrexCart.cart_widget'); ?>

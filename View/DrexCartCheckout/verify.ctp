@@ -3,6 +3,8 @@
 <?php $order = $this->Session->read('DrexCartOrder'); ?>
 <?php $user = $this->Session->read('DrexCartUser'); ?>
 
+
+
 <div class="row">
 	<div class="col-md-6">
 		<div class="panel panel-default">

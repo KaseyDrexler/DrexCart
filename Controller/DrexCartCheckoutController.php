@@ -48,10 +48,13 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			} else {
 				$this->redirect('/DrexCartCheckout/verify');
 			}
+		
+			// validate credit card
+			
 		}
 		
 		
-		// check for existing order information
+		// check for existing order information and populate forms with it
 		if ($this->Session->check('DrexCartOrder')) {
 			$this->request->data['DrexCartOrder'] = $this->Session->read('DrexCartOrder');
 		}
@@ -61,7 +64,22 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	}
 	
 	public function verify () {
-		
+		if (!empty($this->request->data)) { 
+			// attempt charge
+			
+			// save customer
+			
+			// save order
+			
+			// save order totals
+			
+			// save order products
+			
+			// update order status
+			
+			// update product info
+			
+		}
 	}
 	
 }

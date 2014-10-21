@@ -23,4 +23,8 @@ class DrexCartCartsController extends DrexCartAppController {
 	public function cart() {
 		
 	}
+	
+	public function cartWidget() {
+		$this->set('num_products', $this->DrexCartCartProduct->getNumProducts($this->Session->read('drexcart_id')));
+	}
 }
