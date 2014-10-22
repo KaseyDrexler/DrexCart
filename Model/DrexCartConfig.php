@@ -1,8 +1,7 @@
 <?php
 
 
-class DrexCartConfig extends AppModel {
-	var $useDbConfig = 'drexCart';
+class DrexCartConfig extends DrexCartAppModel {
 	var $useTable = 'drex_cart_config';
 	
 	public function getValue($code='') {

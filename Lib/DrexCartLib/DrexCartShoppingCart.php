@@ -83,7 +83,7 @@ class DrexCartShoppingCart {
 			$user = CakeSession::read('DrexCartUser');
 			$user['created_date'] = date('Y-m-d H:i:s');
 			$user['last_login'] = date('Y-m-d H:i:s');
-			pr($user);
+			//pr($user);
 			$this->DrexCartUser->save(array('DrexCartUser'=>$user));
 			$user_id = $this->DrexCartUser->id;
 			
@@ -91,7 +91,7 @@ class DrexCartShoppingCart {
 			$order['drex_cart_users_id'] = $user_id;
 			$order['created_date'] = date('Y-m-d H:i:s');
 			$order['drex_cart_order_statuses_id'] = 1;
-			pr($order);
+			//pr($order);
 			$this->DrexCartOrder->save(array('DrexCartOrder'=>$order));
 			$order_id = $this->DrexCartOrder->id;
 			
@@ -106,13 +106,20 @@ class DrexCartShoppingCart {
 				// save order product
 				$this->DrexCartOrderProduct->id = null;
 				$this->DrexCartOrderProduct->save(array('DrexCartOrderProduct'=>array('drex_cart_orders_id'=>$order_id,
-																					  'drex_cart_products_id'=>$product['DrexCartCartProduct']['id'],
+																					  'drex_cart_products_id'=>$product['DrexCartProduct']['id'],
 																					  'rate'=>$product['DrexCartCartProduct']['rate'])));
 				// update product stats
 				$this->DrexCartProduct->updateAll(array('quantity'=>'quantity-'.$product['DrexCartCartProduct']['quantity']),
 												 array('id'=>$product['DrexCartProduct']['id']));
 			}
 			
+			$this->DrexCartCartProduct->deleteAll(array('drex_cart_carts_id'=>$this->drexcart_id));
+			CakeSession::delete('DrexCartUser');
+			CakeSession::delete('DrexCartOrder');
+			$orderResponse = new stdClass();
+			$orderResponse->user_id = $user_id;
+			$orderResponse->order_id = $order_id;
+			return $orderResponse;
 		} else {
 			throw new Exception('No products in cart!');
 		}

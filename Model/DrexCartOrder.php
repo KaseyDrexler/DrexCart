@@ -1,8 +1,7 @@
 <?php
 
 
-class DrexCartOrder extends AppModel {
-	var $useDbConfig = 'drexCart';
+class DrexCartOrder extends DrexCartAppModel {
 	public $name = 'DrexCartOrder';
 	
 	public $validate = array(
@@ -62,15 +61,14 @@ class DrexCartOrder extends AppModel {
 				
 	);
 	
-	var $hasOne = array(
+	
+
+	var $belongsTo = array(
 			'DrexCartUser' => array(
-					'className' => 'DrexCartUser',
-					'foreignKey' => 'id',
-					'dependent' => false
+					'className' => 'DrexCart.DrexCartUser',
+					'foreignKey' => 'drex_cart_users_id'
 			)
 	);
-
-	
 	
 
 	// validation rule
@@ -86,5 +84,11 @@ class DrexCartOrder extends AppModel {
 			}
 		}
 		return TRUE;
+	}
+	
+	
+	public function getOrder($order_id=null, $user_id=null) {
+		
+		return $this->find('first', array('conditions'=>array('DrexCartOrder.id'=>(int)$order_id, 'DrexCartOrder.drex_cart_users_id'=>(int)$user_id)));
 	}
 }

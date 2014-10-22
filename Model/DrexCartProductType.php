@@ -1,8 +1,6 @@
 <?php
 
-class DrexCartProductType extends AppModel {
-	var $useDbConfig = 'drexCart';
-	
+class DrexCartProductType extends DrexCartAppModel {
 	
 	public function getOptions() {
 		$results = $this->find('all');

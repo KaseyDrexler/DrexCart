@@ -1,5 +1,4 @@
 <?php
 
-class DrexCartOrderProduct extends AppModel {
-	public $useDbConfig = 'drexCart';
+class DrexCartOrderProduct extends DrexCartAppModel {
 }

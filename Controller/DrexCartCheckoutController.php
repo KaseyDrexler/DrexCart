@@ -66,7 +66,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	public function verify () {
 		if (!empty($this->request->data)) { 
 			
-			$this->cart->createOrder();
+			$orderResponse = $this->cart->createOrder();
 			// attempt charge
 			
 			// save customer
@@ -81,6 +81,8 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			// update product info
 			
+			$this->userManager->loginById($orderResponse->user_id);
+			$this->redirect('/DrexCartUsers/orderDetails/'.$orderResponse->order_id);
 		}
 	}
 	

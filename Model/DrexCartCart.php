@@ -1,7 +1,6 @@
 <?php
 
-class DrexCartCart extends AppModel {
-	var $useDbConfig = 'drexCart';
+class DrexCartCart extends DrexCartAppModel {
 	
 	public function createCart($user_id=null) {
 		$this->save(array('DrexCartCart'=>array('user_id'=>$user_id, 'created_date'=>date('Y-m-d H:i:s'))));

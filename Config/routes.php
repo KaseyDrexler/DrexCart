@@ -5,3 +5,4 @@ Router::connect('/DrexCartInstall/:action/*', array('plugin'=>'DrexCart', 'contr
 Router::connect('/DrexCartAdmin/:action/*', array('plugin'=>'DrexCart', 'controller' => 'DrexCartAdmin'));
 
 Router::connect('/DrexCartCheckout/:action/*', array('plugin'=>'DrexCart', 'controller' => 'DrexCartCheckout'));
+Router::connect('/DrexCartUsers/:action/*', array('plugin'=>'DrexCart', 'controller' => 'DrexCartUsers'));

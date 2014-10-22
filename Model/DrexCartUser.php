@@ -1,7 +1,6 @@
 <?php
 
-class DrexCartUser extends AppModel {
-	var $useDbConfig = 'drexCart';
+class DrexCartUser extends DrexCartAppModel {
 	public $name = 'DrexCartUser';
 	
 	public $validate = array(
@@ -21,13 +20,6 @@ class DrexCartUser extends AppModel {
 			'vpassword' => array('identicalFieldValues' => array('rule' => array('identicalFieldValues','password'), 'message' => 'Both passwords must match'))
 				
 	);
-	
-	var $belongsTo = array(
-			'DrexCartOrder' => array(
-					'className' => 'DrexCartOrder',
-					'foreignKey' => 'drex_cart_users_id'
-			)
-	);
 
 	
 	// validation rule
@@ -43,6 +35,10 @@ class DrexCartUser extends AppModel {
 			}
 		}
 		return TRUE;
+	}
+	
+	public function getUserById($user_id=null) {
+		return $this->find('first', array('conditions'=>array('id'=>(int)$user_id)));
 	}
 	
 }

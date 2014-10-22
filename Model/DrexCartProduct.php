@@ -1,7 +1,6 @@
 <?php
 
-class DrexCartProduct extends AppModel {
-	var $useDbConfig = 'drexCart';
+class DrexCartProduct extends DrexCartAppModel {
 	
 	
 	public function getAllProducts($conditions=array()) {

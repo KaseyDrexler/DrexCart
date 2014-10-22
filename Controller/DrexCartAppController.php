@@ -4,6 +4,7 @@
 App::uses('DrexCartInstaller', 'DrexCart.DrexCartLib');
 App::uses('DrexCartFunctions', 'DrexCart.DrexCartLib');
 App::uses('DrexCartShoppingCart', 'DrexCart.DrexCartLib');
+App::uses('DrexCartUserManager', 'DrexCart.DrexCartLib');
 
 class DrexCartAppController extends AppController {
 	
@@ -38,8 +39,23 @@ class DrexCartAppController extends AppController {
 		$this->DCFunctions = new DrexCartFunctions();
 		$this->set('DCFunctions', $this->DCFunctions);
 		
+		
+		// user manager
+		$this->loadUserManager();
+		
 	}
+
+	private function loadUserManager() {
 	
+		if ($this->Session->check('user_manager')) {
+			$this->userManager = $this->Session->read('user_manager');
+		} else {
+			$this->userManager = new DrexCartUserManager();
+			$this->Session->write('user_manager', $this->userManager);
+		}
+	
+		$this->set('userManager', $this->userManager);
+	}
 	private function loadCartInfo() {
 
 		if ($this->Session->check('shopping_cart')) {
