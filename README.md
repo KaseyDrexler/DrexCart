@@ -14,7 +14,7 @@ Install instructions
 * modify your app/Config/bootstrap.php file
 	Put this line somewhere in that file:  CakePlugin::load('DrexCart', array('routes'=>true, 'database'=>true));
 * edit app/Plugin/DrexCart/Config/database 
-	Modify the drexCart database to point to a blank database you should have already created. It must be empty though.
+	Modify the drexCart database to point to a blank database you should have already created. The database must be empty though. You will run this as an addition database outside of your $default database for your cakephp structure.
 * Open web browser and navigate to http://mysite.com/DrexCartProducts/index  You will be taken to an install page where the database
 	can be setup. Sorry, install is not really user friendly at this time. If you get to step 2 right now, that is far enough. The database is installed and you 
 	can browse the products (http://mysite.com/DrexCartProducts/index) or administer the site (http://mysite.com/DrexCartAdmin/index)
