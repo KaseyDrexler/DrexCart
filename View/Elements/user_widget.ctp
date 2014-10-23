@@ -20,6 +20,8 @@ if (isset($userManager) && $userManager->isLoggedIn()) {
 		</div>
 	</div>
 	<?php 
-}
+} else {
 
+	echo $this->Html->link('Login', '/DrexCartUsers/login'); 
+}
 ?>

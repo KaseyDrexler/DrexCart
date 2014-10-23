@@ -6,7 +6,7 @@ class DrexCartUsersController extends DrexCartAppController {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		
-		if (!$this->userManager->isLoggedIn()) {
+		if (!$this->userManager->isLoggedIn() && strtolower($this->params['action'])!='login') {
 			$this->Session->setFlash('You do not have access to that page, please login first!', 'default', array('class'=>'alert alert-danger'));
 			$this->redirect('/DrexCartProducts/index');
 		}
@@ -31,5 +31,16 @@ class DrexCartUsersController extends DrexCartAppController {
 	public function logout() {
 		$this->userManager->logout();
 		$this->redirect('/DrexCartProducts/index');
+	}
+	
+	public function login() {
+		if (!empty($this->request->data)) {
+			if ($this->userManager->loginByEmail($this->request->data['DrexCartUser']['email'], $this->request->data['DrexCartUser']['password'])) {
+				$this->redirect('/DrexCartUsers/account');
+			} else {
+				$this->Session->setFlash('Login failed', 'default', array('class'=>'alert alert-danger')); 
+				
+			}
+		}
 	}
 }

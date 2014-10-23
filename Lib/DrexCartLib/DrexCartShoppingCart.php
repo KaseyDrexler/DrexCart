@@ -66,7 +66,7 @@ class DrexCartShoppingCart {
 		// check order information
 		if (!CakeSession::check('DrexCartOrder')) throw new Exception('There is no order information for checkout!');
 		// check customer information
-		if (!CakeSession::check('DrexCartUser')) throw new Exception('There is no customer information for checkout!');
+		if (!CakeSession::check('DrexCartUser') && !$this->userManager->isLoggedIn()) throw new Exception('There is no customer information for checkout!');
 		
 		$products = $this->getProducts();
 		if (sizeof($products)>0) {
@@ -82,16 +82,23 @@ class DrexCartShoppingCart {
 			$this->DrexCartOrderProduct->create();
 			$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
 			$this->DrexCartAddress->create();
-			$user = CakeSession::read('DrexCartUser');
+
 			$order = CakeSession::read('DrexCartOrder');
 			
-			$user['created_date'] = date('Y-m-d H:i:s');
-			$user['last_login'] = date('Y-m-d H:i:s');
-			$user['firstname'] = ucwords($order['billing_firstname']);
-			$user['lastname'] = ucwords($order['billing_lastname']);
-			//pr($user);
-			$this->DrexCartUser->save(array('DrexCartUser'=>$user));
-			$user_id = $this->DrexCartUser->id;
+			if (!$this->userManager->isLoggedIn()) {
+				$user = CakeSession::read('DrexCartUser');
+				
+				$user['created_date'] = date('Y-m-d H:i:s');
+				$user['last_login'] = date('Y-m-d H:i:s');
+				$user['firstname'] = ucwords($order['billing_firstname']);
+				$user['lastname'] = ucwords($order['billing_lastname']);
+				//pr($user);
+				
+				$this->DrexCartUser->save(array('DrexCartUser'=>$user));
+				$user_id = $this->DrexCartUser->id;
+			} else {
+				$user_id = $this->userManager->getUserId();
+			}
 			
 			// save addresses
 			if ($order['billing_address1']) {
@@ -138,6 +145,9 @@ class DrexCartShoppingCart {
 				}
 			}
 			
+			$this->DrexCartUser->updateAll(array('DrexCartUser.password'=>"'".md5($user['password'])."'"),
+											array('DrexCartUser.id'=>$user_id));
+			
 			$order = CakeSession::read('DrexCartOrder');
 			$order['drex_cart_users_id'] = $user_id;
 			$order['created_date'] = date('Y-m-d H:i:s');
@@ -145,6 +155,19 @@ class DrexCartShoppingCart {
 			//pr($order);
 			$this->DrexCartOrder->save(array('DrexCartOrder'=>$order));
 			$order_id = $this->DrexCartOrder->id;
+			
+			// order totals
+			$order_amount = $this->getCartTotal();
+			$this->DrexCartOrderTotal = ClassRegistry::init('DrexCart.DrexCartOrderTotal');
+			$this->DrexCartOrderTotal->create();
+			$this->DrexCartOrderTotal->id = null;
+			$this->DrexCartOrderTotal->save(array('DrexCartOrderTotal'=>array('drex_cart_orders_id'=>$order_id,
+																			  'code'=>'subtotal',
+																			  'amount'=>$order_amount)));
+			$this->DrexCartOrderTotal->id = null;
+			$this->DrexCartOrderTotal->save(array('DrexCartOrderTotal'=>array('drex_cart_orders_id'=>$order_id,
+																			  'code'=>'total',
+																			  'amount'=>$order_amount)));
 			
 			// make history entry
 			$this->DrexCartOrderStatusHistory = ClassRegistry::init('DrexCart.DrexCartOrderStatusHistory');

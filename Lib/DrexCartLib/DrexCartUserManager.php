@@ -21,7 +21,22 @@ class DrexCartUserManager {
 	}
 	
 	public function loginByEmail($email=null, $password=null) {
+		$this->DrexCartUser = ClassRegistry::init('DrexCart.DrexCartUser');
+		$this->DrexCartUser->create();
 		
+		// find the user
+		$user = $this->DrexCartUser->getUserByEmail($email);
+		if ($user) {
+			if ($user['DrexCartUser']['password']==md5($password)) {
+				$this->userdata = $user;
+				
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return false;
+		}
 	}
 	
 	public function logout() {

@@ -41,4 +41,7 @@ class DrexCartUser extends DrexCartAppModel {
 		return $this->find('first', array('conditions'=>array('id'=>(int)$user_id)));
 	}
 	
+	public function getUserByEmail($email=null) {
+		return $this->find('first', array('conditions'=>array('email'=>$email)));
+	}
 }
