@@ -18,17 +18,18 @@
 </div>
 <div class="row">
 	<div class="col-md-6">Step 3</div>
+	<div class="col-md-6"><?php echo $this->Html->link('Go To Site', '/DrexCartProducts/index'); ?><br />
+	<?php echo $this->Html->link('Go To Admin Site', '/DrexCartAdmin/index'); ?></div>
+</div>
+<div class="row">
+	<div class="col-md-6"></div>
 	<div class="col-md-6"></div>
 </div>
 <div class="row">
-	<div class="col-md-6">Step 4</div>
+	<div class="col-md-6"></div>
 	<div class="col-md-6"></div>
 </div>
 <div class="row">
-	<div class="col-md-6">Step 5</div>
 	<div class="col-md-6"></div>
-</div>
-<div class="row">
-	<div class="col-md-6">Step 6</div>
 	<div class="col-md-6"></div>
 </div>

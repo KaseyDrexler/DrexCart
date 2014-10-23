@@ -58,7 +58,7 @@ class DrexCartShoppingCart {
 	}
 	
 	public function createOrder() {
-		echo 'create order called';
+		
 		$this->DrexCartCartProduct = ClassRegistry::init('DrexCart.DrexCartCartProduct');
 		$this->DrexCartCartProduct->create();
 		// checks
@@ -80,12 +80,63 @@ class DrexCartShoppingCart {
 			$this->DrexCartProduct->create();
 			$this->DrexCartOrderProduct = ClassRegistry::init('DrexCart.DrexCartOrderProduct');
 			$this->DrexCartOrderProduct->create();
+			$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+			$this->DrexCartAddress->create();
 			$user = CakeSession::read('DrexCartUser');
+			$order = CakeSession::read('DrexCartOrder');
+			
 			$user['created_date'] = date('Y-m-d H:i:s');
 			$user['last_login'] = date('Y-m-d H:i:s');
+			$user['firstname'] = ucwords($order['billing_firstname']);
+			$user['lastname'] = ucwords($order['billing_lastname']);
 			//pr($user);
 			$this->DrexCartUser->save(array('DrexCartUser'=>$user));
 			$user_id = $this->DrexCartUser->id;
+			
+			// save addresses
+			if ($order['billing_address1']) {
+				$billing_address = array('DrexCartAddress'=>array('firstname'     =>ucwords($order['billing_firstname']),
+																	  'lastname'      =>ucwords($order['billing_lastname']),
+																	  'address1'      =>ucwords($order['billing_address1']),
+																	  'address2'      =>ucwords($order['billing_address2']),
+																	  'city'          =>ucwords($order['billing_city']),
+																	  'state'         =>$order['billing_state'],
+																	  'zip'           =>$order['billing_zip'],
+																	  'contact_number'=>$order['billing_phone'],
+																	  'drex_cart_users_id'=>$user_id));
+				$this->DrexCartAddress->id = null;
+				$this->DrexCartAddress->save($billing_address);
+				$this->DrexCartUser->updateAll(array('DrexCartUser.billing_address_id'=>$this->DrexCartAddress->id),
+											   array('DrexCartUser.id'=>$user_id));
+			}
+			if ($order['shipping_address1']) {
+				if ($order['shipping_address1']==$order['billing_address1'] &&
+					$order['shipping_address2']==$order['billing_address2'] &&
+					$order['shipping_city']==$order['billing_city'] &&
+					$order['shipping_state']==$order['billing_state'] &&
+					$order['shipping_zip']==$order['billing_zip'] &&
+					$order['shipping_firstname']==$order['billing_firstname'] &&
+					$order['shipping_lastname']==$order['billing_lastname']) {
+						
+					// copy of billing address
+					$this->DrexCartUser->updateAll(array('DrexCartUser.shipping_address_id'=>$this->DrexCartAddress->id),
+							array('DrexCartUser.id'=>$user_id));
+				} else {
+					// shipping address is different than billing address
+					$shipping_address = array('DrexCartAddress'=>array('firstname'     =>ucwords($order['shipping_firstname']),
+																		'lastname'      =>ucwords($order['shipping_lastname']),
+																		'address1'      =>ucwords($order['shipping_address1']),
+																		'address2'      =>ucwords($order['shipping_address2']),
+																		'city'          =>ucwords($order['shipping_city']),
+																		'state'         =>$order['shipping_state'],
+																		'zip'           =>$order['shipping_zip'],
+																		'drex_cart_users_id'=>$user_id));
+					$this->DrexCartAddress->id = null;
+					$this->DrexCartAddress->save($shipping_address);
+					$this->DrexCartUser->updateAll(array('DrexCartUser.shipping_address_id'=>$this->DrexCartAddress->id),
+												   array('DrexCartUser.id'=>$user_id));
+				}
+			}
 			
 			$order = CakeSession::read('DrexCartOrder');
 			$order['drex_cart_users_id'] = $user_id;

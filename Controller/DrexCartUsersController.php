@@ -19,4 +19,17 @@ class DrexCartUsersController extends DrexCartAppController {
 		
 		$this->set('order', $order);
 	}
+	
+	public function orders() {
+		
+	}
+	
+	public function account() {
+		
+	}
+	
+	public function logout() {
+		$this->userManager->logout();
+		$this->redirect('/DrexCartProducts/index');
+	}
 }

@@ -65,4 +65,24 @@ class DrexCartFunctions {
 				'WY'=>'Wyoming');
 	}
 	
+	public function formatAddress($address=null) {
+		if (!$address) return '<p class="text-center text-danger"><b>No address found</b></p>';
+		
+		$html = '<address>
+				  <strong>'.$address['DrexCartAddress']['firstname'] . ' ' . $address['DrexCartAddress']['lastname'] . '</strong><br>
+				  '.$address['DrexCartAddress']['address1'].'<br>
+				  '.($address['DrexCartAddress']['address2'] ? $address['DrexCartAddress']['address2'].'<br />' : '').'
+				  '.$address['DrexCartAddress']['city'].', '.$address['DrexCartAddress']['state'].' '.$address['DrexCartAddress']['zip'].'<br>
+				  '.($address['DrexCartAddress']['contact_number'] ? '<abbr title="Phone">P:</abbr> '.$this->formatPhoneNumber($address['DrexCartAddress']['contact_number']) : '') .'
+				</address>';
+		return $html;
+	}
+	
+	public function formatPhoneNumber($number = null) {
+		$new_number = preg_replace('/\(\)\{\}\-\ \./', '', $number);
+		if (strlen($new_number)==10) {
+			return substr($new_number, 0,3) . '-'.substr($new_number, 3,3).'-'.substr($new_number, 6);
+		} else return $number;
+	}
+	
 }

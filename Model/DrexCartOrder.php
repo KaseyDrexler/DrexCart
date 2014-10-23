@@ -91,4 +91,9 @@ class DrexCartOrder extends DrexCartAppModel {
 		
 		return $this->find('first', array('conditions'=>array('DrexCartOrder.id'=>(int)$order_id, 'DrexCartOrder.drex_cart_users_id'=>(int)$user_id)));
 	}
+	
+	public function getOrdersByUserId($user_id=null) {
+		return $this->find('all', array('conditions'=>array('DrexCartOrder.drex_cart_users_id'=>(int)$user_id),
+										'order'=>array('DrexCartOrder.created_date'=>'desc')));
+	}
 }

@@ -53,7 +53,8 @@
 		<div id="content">
 			<table cellpadding="0" cellspacing="0" width="100%">
 			<tr>
-				<td colspan="3"><h1>DrexCart</h1></td>
+				<td colspan="2"><h1>DrexCart</h1></td>
+				<td class="text-right"><?php echo $this->element('user_widget'); ?></td>
 			</tr>
 			<tr>
 				<td valign="top" width="150">
@@ -73,6 +74,7 @@
 					<div class="row">
 					<div id="panel_right">
 						
+					</div>
 					</div>
 				</td>
 			</tr>

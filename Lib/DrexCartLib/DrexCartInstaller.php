@@ -18,20 +18,20 @@ class DrexCartInstaller {
 		$this->DrexCartConfig = ClassRegistry::init('DrexCart.DrexCartConfig');
 		//$this->DrexCartConfig->create();
 		try {
-			$this->DrexCartConfig->query("SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+			$this->DrexCartConfig->query("
+					
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
 -- Schema findy2_drexcart
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `findy2_drexcart` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `findy2_drexcart` ;
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_config`
+-- Table `drex_cart_config`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_config` (
+CREATE TABLE IF NOT EXISTS `drex_cart_config` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `config_code` VARCHAR(45) NOT NULL,
   `config_value` VARCHAR(45) NOT NULL,
@@ -41,22 +41,62 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_users`
+-- Table `drex_cart_addresses`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_users` (
+CREATE TABLE IF NOT EXISTS `drex_cart_addresses` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `drex_cart_users_id` INT NOT NULL,
+  `firstname` VARCHAR(45) NULL,
+  `lastname` VARCHAR(45) NULL,
+  `address1` VARCHAR(45) NULL,
+  `address2` VARCHAR(45) NULL,
+  `city` VARCHAR(45) NULL,
+  `state` VARCHAR(45) NULL,
+  `zip` VARCHAR(45) NULL,
+  `contact_number` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_addresses_drex_cart_users1_idx` (`drex_cart_users_id` ASC),
+  CONSTRAINT `fk_drex_cart_addresses_drex_cart_users1`
+    FOREIGN KEY (`drex_cart_users_id`)
+    REFERENCES `drex_cart_users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `drex_cart_users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `created_date` DATETIME NOT NULL,
   `last_login` DATETIME NULL,
-  PRIMARY KEY (`id`))
+  `firstname` VARCHAR(45) NULL,
+  `lastname` VARCHAR(45) NULL,
+  `billing_address_id` INT NULL,
+  `shipping_address_id` INT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_users_drex_cart_addresses1_idx` (`billing_address_id` ASC),
+  INDEX `fk_drex_cart_users_drex_cart_addresses2_idx` (`shipping_address_id` ASC),
+  CONSTRAINT `fk_drex_cart_users_drex_cart_addresses1`
+    FOREIGN KEY (`billing_address_id`)
+    REFERENCES `drex_cart_addresses` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_drex_cart_users_drex_cart_addresses2`
+    FOREIGN KEY (`shipping_address_id`)
+    REFERENCES `drex_cart_addresses` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_product_types`
+-- Table `drex_cart_product_types`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_product_types` (
+CREATE TABLE IF NOT EXISTS `drex_cart_product_types` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `product_type` VARCHAR(45) NOT NULL,
   `product_type_name` VARCHAR(45) NOT NULL,
@@ -66,9 +106,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_products`
+-- Table `drex_cart_products`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_products` (
+CREATE TABLE IF NOT EXISTS `drex_cart_products` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `rate` DECIMAL(10,5) NOT NULL,
@@ -85,16 +125,16 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_products` (
   INDEX `fk_products_product_types1_idx` (`product_types_id` ASC),
   CONSTRAINT `fk_products_product_types1`
     FOREIGN KEY (`product_types_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_product_types` (`id`)
+    REFERENCES `drex_cart_product_types` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_carts`
+-- Table `drex_cart_carts`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_carts` (
+CREATE TABLE IF NOT EXISTS `drex_cart_carts` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_date` VARCHAR(45) NOT NULL,
   `users_id` INT NULL,
@@ -102,16 +142,16 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_carts` (
   INDEX `fk_cart_users_idx` (`users_id` ASC),
   CONSTRAINT `fk_cart_users`
     FOREIGN KEY (`users_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_users` (`id`)
+    REFERENCES `drex_cart_users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_categories`
+-- Table `drex_cart_categories`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_categories` (
+CREATE TABLE IF NOT EXISTS `drex_cart_categories` (
   `id` INT NOT NULL,
   `name` VARCHAR(45) NOT NULL,
   `parent_categories_id` INT NULL,
@@ -119,16 +159,16 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_categories` (
   INDEX `fk_categories_categories1_idx` (`parent_categories_id` ASC),
   CONSTRAINT `fk_categories_categories1`
     FOREIGN KEY (`parent_categories_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_categories` (`id`)
+    REFERENCES `drex_cart_categories` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_products_to_categories`
+-- Table `drex_cart_products_to_categories`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_products_to_categories` (
+CREATE TABLE IF NOT EXISTS `drex_cart_products_to_categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `categories_id` INT NOT NULL,
   `products_id` INT NOT NULL,
@@ -137,21 +177,21 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_products_to_categories` 
   INDEX `fk_products_to_categories_products1_idx` (`products_id` ASC),
   CONSTRAINT `fk_products_to_categories_categories1`
     FOREIGN KEY (`categories_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_categories` (`id`)
+    REFERENCES `drex_cart_categories` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_products_to_categories_products1`
     FOREIGN KEY (`products_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_products` (`id`)
+    REFERENCES `drex_cart_products` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_cart_products`
+-- Table `drex_cart_cart_products`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_cart_products` (
+CREATE TABLE IF NOT EXISTS `drex_cart_cart_products` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `drex_cart_products_id` INT NOT NULL,
   `drex_cart_carts_id` INT NOT NULL,
@@ -162,21 +202,21 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_cart_products` (
   INDEX `fk_drex_cart_cart_products_drex_cart_carts1_idx` (`drex_cart_carts_id` ASC),
   CONSTRAINT `fk_drex_cart_cart_products_drex_cart_products1`
     FOREIGN KEY (`drex_cart_products_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_products` (`id`)
+    REFERENCES `drex_cart_products` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_drex_cart_cart_products_drex_cart_carts1`
     FOREIGN KEY (`drex_cart_carts_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_carts` (`id`)
+    REFERENCES `drex_cart_carts` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_order_statuses`
+-- Table `drex_cart_order_statuses`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_order_statuses` (
+CREATE TABLE IF NOT EXISTS `drex_cart_order_statuses` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
@@ -184,9 +224,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_orders`
+-- Table `drex_cart_orders`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_orders` (
+CREATE TABLE IF NOT EXISTS `drex_cart_orders` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `created_date` DATETIME NOT NULL,
   `drex_cart_users_id` INT NULL,
@@ -212,21 +252,21 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_orders` (
   INDEX `fk_drex_cart_orders_drex_cart_order_statuses1_idx` (`drex_cart_order_statuses_id` ASC),
   CONSTRAINT `fk_drex_cart_orders_drex_cart_users1`
     FOREIGN KEY (`drex_cart_users_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_users` (`id`)
+    REFERENCES `drex_cart_users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_drex_cart_orders_drex_cart_order_statuses1`
     FOREIGN KEY (`drex_cart_order_statuses_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_order_statuses` (`id`)
+    REFERENCES `drex_cart_order_statuses` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_order_status_histories`
+-- Table `drex_cart_order_status_histories`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_order_status_histories` (
+CREATE TABLE IF NOT EXISTS `drex_cart_order_status_histories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `status_date` DATETIME NOT NULL,
   `note` VARCHAR(255) NULL,
@@ -237,21 +277,21 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_order_status_histories` 
   INDEX `fk_drex_cart_order_status_histories_drex_cart_orders1_idx` (`drex_cart_orders_id` ASC),
   CONSTRAINT `fk_drex_cart_order_status_histories_drex_cart_order_statuses1`
     FOREIGN KEY (`drex_cart_order_statuses_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_order_statuses` (`id`)
+    REFERENCES `drex_cart_order_statuses` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_drex_cart_order_status_histories_drex_cart_orders1`
     FOREIGN KEY (`drex_cart_orders_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_orders` (`id`)
+    REFERENCES `drex_cart_orders` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_payment_profiles`
+-- Table `drex_cart_payment_profiles`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_payment_profiles` (
+CREATE TABLE IF NOT EXISTS `drex_cart_payment_profiles` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `card_number` VARCHAR(16) NOT NULL,
   `card_exp` DATE NOT NULL,
@@ -262,16 +302,16 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_payment_profiles` (
   INDEX `fk_drex_cart_payment_profiles_drex_cart_users1_idx` (`drex_cart_users_id` ASC),
   CONSTRAINT `fk_drex_cart_payment_profiles_drex_cart_users1`
     FOREIGN KEY (`drex_cart_users_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_users` (`id`)
+    REFERENCES `drex_cart_users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `findy2_drexcart`.`drex_cart_order_products`
+-- Table `drex_cart_order_products`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_order_products` (
+CREATE TABLE IF NOT EXISTS `drex_cart_order_products` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `drex_cart_orders_id` INT NOT NULL,
   `drex_cart_products_id` INT NOT NULL,
@@ -283,12 +323,30 @@ CREATE TABLE IF NOT EXISTS `findy2_drexcart`.`drex_cart_order_products` (
   INDEX `fk_drex_cart_order_products_drex_cart_products1_idx` (`drex_cart_products_id` ASC),
   CONSTRAINT `fk_drex_cart_order_products_drex_cart_orders1`
     FOREIGN KEY (`drex_cart_orders_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_orders` (`id`)
+    REFERENCES `drex_cart_orders` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_drex_cart_order_products_drex_cart_products1`
     FOREIGN KEY (`drex_cart_products_id`)
-    REFERENCES `findy2_drexcart`.`drex_cart_products` (`id`)
+    REFERENCES `drex_cart_products` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `drex_cart_order_totals`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_order_totals` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `drex_cart_orders_id` INT NOT NULL,
+  `code` VARCHAR(45) NOT NULL,
+  `amount` DECIMAL(10,5) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_order_totals_drex_cart_orders1_idx` (`drex_cart_orders_id` ASC),
+  CONSTRAINT `fk_drex_cart_order_totals_drex_cart_orders1`
+    FOREIGN KEY (`drex_cart_orders_id`)
+    REFERENCES `drex_cart_orders` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -302,6 +360,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 					
 					
 					INSERT INTO `findy2_drexcart`.`drex_cart_order_statuses` (`status_name`) VALUES ('Entered');
+					INSERT INTO `findy2_drexcart`.`drex_cart_product_types` (`product_type`, `product_type_name`, `shippable`) VALUES ('DVD', 'DVD', 1);
 					
 					
 					");

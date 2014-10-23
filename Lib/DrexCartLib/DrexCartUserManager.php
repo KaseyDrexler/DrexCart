@@ -24,6 +24,10 @@ class DrexCartUserManager {
 		
 	}
 	
+	public function logout() {
+		$this->userdata = null;
+	}
+	
 	
 	public function isLoggedIn() {
 		return ($this->userdata) ? true : false;
@@ -39,6 +43,41 @@ class DrexCartUserManager {
 		return $this->userdata['DrexCartUser']['email'];
 	}
 	
+	public function getFullName() {
+		return $this->userdata['DrexCartUser']['firstname'] . ' ' . $this->userdata['DrexCartUser']['lastname'];
+	}
+	
+	public function getContactPhone() {
+		//return $this->userdata['DrexCartUser']['contact_number'];
+	}
+	
+	public function getBillingAddress() {
+		if ($this->userdata['DrexCartUser']['billing_address_id']) {
+			$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+			$this->DrexCartAddress->create();
+			return $this->DrexCartAddress->find('first', array('conditions'=>array('id'=>$this->userdata['DrexCartUser']['billing_address_id'])));
+		} else {
+			return false;
+		}
+		
+	}
+	
+	public function getShippingAddress() {
+		if ($this->userdata['DrexCartUser']['shipping_address_id']) {
+			$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+			$this->DrexCartAddress->create();
+			return $this->DrexCartAddress->find('first', array('conditions'=>array('id'=>$this->userdata['DrexCartUser']['shipping_address_id'])));
+		} else {
+			return false;
+		}
+	
+	}
+	
+	public function getOrders() {
+		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
+		$this->DrexCartOrder->create();
+		return $this->DrexCartOrder->getOrdersByUserId($this->getUserId());
+	}
 	
 }
 
