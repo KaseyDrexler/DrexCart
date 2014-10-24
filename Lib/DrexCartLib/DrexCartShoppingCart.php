@@ -84,7 +84,7 @@ class DrexCartShoppingCart {
 			$this->DrexCartAddress->create();
 
 			$order = CakeSession::read('DrexCartOrder');
-			
+			$this->userManager = CakeSession::read('user_manager');
 			if (!$this->userManager->isLoggedIn()) {
 				$user = CakeSession::read('DrexCartUser');
 				
