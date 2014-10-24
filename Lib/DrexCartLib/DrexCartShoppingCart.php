@@ -57,6 +57,23 @@ class DrexCartShoppingCart {
 		}
 	}
 	
+	public function updateQuantity($cartProductId=null, $quantity=null) {
+		$this->DrexCartCartProduct = ClassRegistry::init('DrexCart.DrexCartCartProduct');
+		$this->DrexCartCartProduct->create();
+		if (!$quantity) { 
+			$this->DrexCartCartProduct->deleteAll(array('id'=>$cartProductId,
+														'drex_cart_carts_id'=>$this->drexcart_id));
+		} else {
+			$this->DrexCartCartProduct->updateAll(array('quantity'=>(int)$quantity),
+												  array('id'=>$cartProductId, 
+												  		'drex_cart_carts_id'=>$this->drexcart_id));
+		}
+	}
+	
+	public function deleteProduct($cartProductId=null) {
+		$this->updateQuantity($cartProductId, 0);
+	}
+	
 	public function createOrder() {
 		
 		$this->DrexCartCartProduct = ClassRegistry::init('DrexCart.DrexCartCartProduct');

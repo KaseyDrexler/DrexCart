@@ -8,11 +8,11 @@
 		echo $this->Html->meta('icon');
 
 		
-		echo $this->Html->css('bootstrap.min');
-		echo $this->Html->css('font-awesome.min');
+		echo $this->Html->css('DrexCart.bootstrap.min');
+		echo $this->Html->css('DrexCart.font-awesome.min');
 		echo $this->Html->css('DrexCart.main');
 		
-		echo $this->Html->script('bootstrap.min');
+		echo $this->Html->script('DrexCart.bootstrap.min');
 		
 		echo $this->fetch('meta');
 		echo $this->fetch('css');

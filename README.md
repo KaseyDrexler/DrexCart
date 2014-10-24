@@ -58,4 +58,9 @@ Discounts
 Sitewide
 * Forgot password
 * Register
+* Layout and theming of site
+* Internationization - add other languages support
+
+Admin
+* login authentication
 

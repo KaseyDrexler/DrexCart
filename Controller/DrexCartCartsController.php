@@ -21,8 +21,22 @@ class DrexCartCartsController extends DrexCartAppController {
 	}
 	
 	public function cart() {
+		
+		if (!empty($this->request->data)) {
+			if (isset($this->request->data['quantity'])) {
+				foreach($this->request->data['quantity'] as $cartProductId=>$quantity) {
+					$this->cart->updateQuantity($cartProductId, $quantity);
+				}
+			}
+		}
+		
 		$this->set('cart_total', $this->cart->getCartTotal());
 		$this->set('cart_products', $this->cart->getProducts());
+	}
+	
+	public function delete($cartProductId=null) {
+		$this->cart->deleteProduct($cartProductId);
+		$this->redirect('/DrexCartCarts/cart');
 	}
 	
 	public function cartWidget() {
