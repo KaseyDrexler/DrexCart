@@ -2,7 +2,7 @@
 
 Initial project creation.
 
-**NOTE: This project is in the early stages of development. Development schedule is listed below.
+**NOTE: This project is in the early stages of development. Development schedule is listed below the Installation instructions.
 
 
 10/15/2014
@@ -26,37 +26,37 @@ Checkout Pages and My Account are being worked on now. Estimated complete date f
 
 
 Checkout Pages
-	collect Billing Info (inc cc)
-	collect shipping info if needed
-	confirm order
-	place/success
-	sign in/create account
-	Payment Gateway Integration
-	Shipping Integration
+	* collect Billing Info (inc cc)
+	* collect shipping info if needed
+	* confirm order
+	* place/success
+	* sign in/create account
+	* Payment Gateway Integration
+	* Shipping Integration
 
 My Account
-	Addresses
-	Orders
-	Change email address
-	change password
+	* Addresses
+	* Orders
+	* Change email address
+	* change password
 
 Categories
-	Edit categories
-	Assign Products
-	Front side category navigation
-	Category images?
+	* Edit categories
+	* Assign Products
+	* Front side category navigation
+	* Category images?
 
 Reviews
-	build review widget to products page
-	My account list of reviews
-	Admin control of reviews
+	* build review widget to products page
+	* My account list of reviews
+	* Admin control of reviews
 
 Discounts
-	Coupon codes support
-	Gift card support
+	* Coupon codes support
+	* Gift card support
 
 
 Sitewide
-	Forgot password
-	Register
+	* Forgot password
+	* Register
 
