@@ -6,3 +6,5 @@ Router::connect('/DrexCartAdmin/:action/*', array('plugin'=>'DrexCart', 'control
 
 Router::connect('/DrexCartCheckout/:action/*', array('plugin'=>'DrexCart', 'controller' => 'DrexCartCheckout'));
 Router::connect('/DrexCartUsers/:action/*', array('plugin'=>'DrexCart', 'controller' => 'DrexCartUsers'));
+
+//Router::connect('/dcimg/*', array('plugin'=>'DrexCart', ''));

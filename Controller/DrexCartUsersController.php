@@ -30,13 +30,16 @@ class DrexCartUsersController extends DrexCartAppController {
 	
 	public function logout() {
 		$this->userManager->logout();
+		$this->cart->logout();
 		$this->redirect('/DrexCartProducts/index');
 	}
 	
 	public function login() {
 		if (!empty($this->request->data)) {
 			if ($this->userManager->loginByEmail($this->request->data['DrexCartUser']['email'], $this->request->data['DrexCartUser']['password'])) {
+				$this->cart->setUserId($this->userManager->getUserId());
 				$this->redirect('/DrexCartUsers/account');
+				
 			} else {
 				$this->Session->setFlash('Login failed', 'default', array('class'=>'alert alert-danger')); 
 				

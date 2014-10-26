@@ -20,7 +20,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			$unvalidated = array();
 			
-			if ($this->request->data['DrexCartOrder']['create_user']==0) {
+			if ($this->request->data['DrexCartOrder']['create_user']==0 || $this->userManager->isLoggedIn()) {
 				$this->DrexCartUser->validate['email'] = null;
 				$this->DrexCartUser->validate['password'] = null;
 			} else {
@@ -63,10 +63,15 @@ class DrexCartCheckoutController extends DrexCartAppController {
 		}
 	}
 	
+	public function checkEmail($email = null) {
+		$email_count = $this->DrexCartUser->find('count', array('conditions'=>array('email'=>$email)));
+		$this->set('email_count', $email_count);
+	}
+	
 	public function verify () {
 		if (!empty($this->request->data)) { 
 			
-			$orderResponse = $this->cart->createOrder();
+			$orderResponse = $this->cart->createOrder($this->userManager->isLoggedIn() ? $this->userManager->getUserId() : null);
 			// attempt charge
 			
 			// save customer

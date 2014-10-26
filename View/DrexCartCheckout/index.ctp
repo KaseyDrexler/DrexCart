@@ -6,17 +6,19 @@
 	<!-- account login ad -->
 	
 	<?php
-	 
-	if ($this->Session->check('user')) {
-		$user = $this->Session->read('user');
-		
+	 /* @var $userManager DrexCartUserManager */
+	if (isset($userManager) && $userManager->isLoggedIn()) {
+		//$user = $this->Session->read('user');
+		echo $userManager->getFullName();
 	} else { // not logged in
 		?>
 		<p class="text-right">Save my information for quick ordering: <?php echo $this->Form->checkbox('create_user', array('label'=>false, 'id'=>'chk_create_account', 'value'=>1, 'checked'=>'checked')); ?></p>
 		<div class="pull-right well" id="panel_create_account">
 			<div class="row">
 				<div class="col-md-6 text-right"><b>Email Address</b></div>
-				<div class="col-md-6<?php echo (isset($unvalidated) && array_key_exists('email', $unvalidated)) ? ' has-error' : ''; ?>"><?php echo $this->Form->input('DrexCartUser.email', array('label'=>false, 'class'=>'form-control', 'placeholder'=>'Email Address'))?></div>
+				<div class="col-md-6<?php echo (isset($unvalidated) && array_key_exists('email', $unvalidated)) ? ' has-error' : ''; ?>"><?php echo $this->Form->input('DrexCartUser.email', array('id'=>'email', 'label'=>false, 'class'=>'form-control', 'placeholder'=>'Email Address'))?> <div style="display:inline-block;" id="checkout_email_check">
+					
+				</div></div>
 			</div>
 			<div class="row">
 				<div class="col-md-6 text-right"><b>Password</b></div>
@@ -204,7 +206,20 @@
 				$('#shipping_address1').val($('#billing_address1').val());
 				$('#shipping_address2').val($('#billing_address2').val());
 			} else {
-				$('#panel_create_account').fadeOut();
+				//$('#panel_create_account').fadeOut();
+			}
+		});
+
+		$('#email').on('keyup', function () {
+			if ($(this).val().length>5 && $(this).val().indexOf('@')>0) {
+				//alert('/DrexCartCarts/checkEmail/'+encodeURI($(this).val()));
+				$.ajax('/DrexCartCheckout/checkEmail/'+encodeURI($(this).val()), {
+						success: function (data) {
+							$('#checkout_email_check').html(data);
+							//alert(data);
+							
+						}});
+						
 			}
 		});
 	});

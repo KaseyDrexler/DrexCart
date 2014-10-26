@@ -17,7 +17,7 @@ class DrexCartShoppingCart {
 		} else {
 			$this->cart = $this->DrexCartCart->createCart(CakeSession::check('drexcart_user_id') ? CakeSession::read('drexcart_user_id') : null);
 			$this->drexcart_id = $this->cart['DrexCartCart']['id'];
-			
+			CakeSession::write('drexcart_id', $this->drexcart_id);
 		}
 		
 	}
@@ -74,7 +74,7 @@ class DrexCartShoppingCart {
 		$this->updateQuantity($cartProductId, 0);
 	}
 	
-	public function createOrder() {
+	public function createOrder($user_id=null) {
 		
 		$this->DrexCartCartProduct = ClassRegistry::init('DrexCart.DrexCartCartProduct');
 		$this->DrexCartCartProduct->create();
@@ -83,7 +83,7 @@ class DrexCartShoppingCart {
 		// check order information
 		if (!CakeSession::check('DrexCartOrder')) throw new Exception('There is no order information for checkout!');
 		// check customer information
-		if (!CakeSession::check('DrexCartUser') && !$this->userManager->isLoggedIn()) throw new Exception('There is no customer information for checkout!');
+		if (!CakeSession::check('DrexCartUser') && !$user_id) throw new Exception('There is no customer information for checkout!');
 		
 		$products = $this->getProducts();
 		if (sizeof($products)>0) {
@@ -102,7 +102,7 @@ class DrexCartShoppingCart {
 
 			$order = CakeSession::read('DrexCartOrder');
 			$this->userManager = CakeSession::read('user_manager');
-			if (!$this->userManager->isLoggedIn()) {
+			if (!$user_id) {
 				$user = CakeSession::read('DrexCartUser');
 				
 				$user['created_date'] = date('Y-m-d H:i:s');
@@ -113,9 +113,12 @@ class DrexCartShoppingCart {
 				
 				$this->DrexCartUser->save(array('DrexCartUser'=>$user));
 				$user_id = $this->DrexCartUser->id;
+				$was_logged_in = false;
 			} else {
-				$user_id = $this->userManager->getUserId();
-			}
+				$user = $this->DrexCartUser->find('first', array('conditions'=>array('id'=>(int)$user_id)));
+				$user = $user['DrexCartUser'];
+				$was_logged_in = true;
+			} 
 			
 			// save addresses
 			if ($order['billing_address1']) {
@@ -162,8 +165,10 @@ class DrexCartShoppingCart {
 				}
 			}
 			
-			$this->DrexCartUser->updateAll(array('DrexCartUser.password'=>"'".md5($user['password'])."'"),
-											array('DrexCartUser.id'=>$user_id));
+			if (!$was_logged_in) {
+				$this->DrexCartUser->updateAll(array('DrexCartUser.password'=>"'".md5($user['password'])."'"),
+												array('DrexCartUser.id'=>$user_id));
+			}
 			
 			$order = CakeSession::read('DrexCartOrder');
 			$order['drex_cart_users_id'] = $user_id;
@@ -216,4 +221,30 @@ class DrexCartShoppingCart {
 		}
 	}
 	
+	public function setUserId($user_id=null) {
+		$this->DrexCartCart = ClassRegistry::init('DrexCart.DrexCartCart');
+		$this->DrexCartCart->create();
+		$this->DrexCartCartProduct = ClassRegistry::init('DrexCart.DrexCartCartProduct');
+		$this->DrexCartCartProduct->create();
+		
+		// find any other carts and merge them
+		$carts = $this->DrexCartCart->find('all', array('conditions'=>array('users_id'=>(int)$user_id)));
+		foreach($carts as $cart) {
+			$this->DrexCartCartProduct->updateAll(array('drex_cart_carts_id'=>$this->drexcart_id), 
+												  array('drex_cart_carts_id'=>$cart['DrexCartCart']['id']));
+		}
+		
+		$this->DrexCartCart->updateAll(array('users_id'=>(int)$user_id),
+									   array('id'=>$this->drexcart_id));
+		
+		
+	}
+	
+	public function logout() {
+		$this->DrexCartCart = ClassRegistry::init('DrexCart.DrexCartCart');
+		$this->DrexCartCart->create();
+		$this->cart = $this->DrexCartCart->createCart(CakeSession::check('drexcart_user_id') ? CakeSession::read('drexcart_user_id') : null);
+			$this->drexcart_id = $this->cart['DrexCartCart']['id'];
+			CakeSession::write('drexcart_id', $this->drexcart_id);
+	}
 }

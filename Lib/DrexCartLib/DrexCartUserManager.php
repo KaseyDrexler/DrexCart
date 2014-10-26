@@ -94,6 +94,10 @@ class DrexCartUserManager {
 		return $this->DrexCartOrder->getOrdersByUserId($this->getUserId());
 	}
 	
+	public function getUserData() {
+		return $this->userdata;
+	}
+	
 }
 
 ?>
