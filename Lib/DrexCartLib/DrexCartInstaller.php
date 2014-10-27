@@ -316,6 +316,7 @@ CREATE TABLE IF NOT EXISTS `drex_cart_order_products` (
   `drex_cart_orders_id` INT NOT NULL,
   `drex_cart_products_id` INT NOT NULL,
   `rate` DECIMAL(10,5) NOT NULL,
+  `quantity` INT NOT NULL DEFAULT 1,
   `tracking_number` VARCHAR(45) NULL,
   `complete_date` DATETIME NULL,
   PRIMARY KEY (`id`),
@@ -355,6 +356,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+					
 					
 					
 					

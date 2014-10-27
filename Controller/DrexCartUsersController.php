@@ -18,6 +18,17 @@ class DrexCartUsersController extends DrexCartAppController {
 		$order = $this->DrexCartOrder->getOrder((int)$order_id, $this->userManager->getUserId());
 		
 		$this->set('order', $order);
+		
+		if ($order) {
+			$this->DrexCartOrderProduct = ClassRegistry::init('DrexCart.DrexCartOrderProduct');
+			$this->DrexCartOrderProduct->create();
+			$order_products = $this->DrexCartOrderProduct->getProductsOnOrder($order['DrexCartOrder']['id']);
+			$this->set('order_products', $order_products);
+			
+			$this->DrexCartOrderTotal = ClassRegistry::init('DrexCart.DrexCartOrderTotal');
+			$this->DrexCartOrderTotal->create();
+			$this->set('order_totals', $this->DrexCartOrderTotal->getOrderTotals($order['DrexCartOrder']['id']));
+		}
 	}
 	
 	public function orders() {

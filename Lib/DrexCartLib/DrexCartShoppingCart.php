@@ -203,7 +203,8 @@ class DrexCartShoppingCart {
 				$this->DrexCartOrderProduct->id = null;
 				$this->DrexCartOrderProduct->save(array('DrexCartOrderProduct'=>array('drex_cart_orders_id'=>$order_id,
 																					  'drex_cart_products_id'=>$product['DrexCartProduct']['id'],
-																					  'rate'=>$product['DrexCartCartProduct']['rate'])));
+																					  'rate'=>$product['DrexCartCartProduct']['rate'],
+																					  'quantity'=>$product['DrexCartCartProduct']['quantity'])));
 				// update product stats
 				$this->DrexCartProduct->updateAll(array('quantity'=>'quantity-'.$product['DrexCartCartProduct']['quantity']),
 												 array('id'=>$product['DrexCartProduct']['id']));

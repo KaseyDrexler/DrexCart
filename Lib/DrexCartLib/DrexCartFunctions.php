@@ -73,7 +73,7 @@ class DrexCartFunctions {
 				  '.$address['DrexCartAddress']['address1'].'<br>
 				  '.($address['DrexCartAddress']['address2'] ? $address['DrexCartAddress']['address2'].'<br />' : '').'
 				  '.$address['DrexCartAddress']['city'].', '.$address['DrexCartAddress']['state'].' '.$address['DrexCartAddress']['zip'].'<br>
-				  '.($address['DrexCartAddress']['contact_number'] ? '<abbr title="Phone">P:</abbr> '.$this->formatPhoneNumber($address['DrexCartAddress']['contact_number']) : '') .'
+				  '.(isset($address['DrexCartAddress']['contact_number']) && $address['DrexCartAddress']['contact_number'] ? '<abbr title="Phone">P:</abbr> '.$this->formatPhoneNumber($address['DrexCartAddress']['contact_number']) : '') .'
 				</address>';
 		return $html;
 	}

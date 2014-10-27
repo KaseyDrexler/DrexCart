@@ -34,6 +34,7 @@
 		echo $this->Html->css('DrexCart.main');
 		
 		echo $this->Html->script('DrexCart.bootstrap.min');
+		echo $this->Html->script('DrexCart.drexcart');
 		
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
@@ -87,7 +88,23 @@
 		</div>
 		<!-- Footer End -->
 	</div>
-	<?php echo $this->element('sql_dump'); ?>
-
+	<?php //echo $this->element('sql_dump'); ?>
+<div class="modal fade drexcart-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Order Details</h4>
+      </div>
+      <div class="modal-body">
+       	
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <!-- button type="button" class="btn btn-primary">Save changes</button -->
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

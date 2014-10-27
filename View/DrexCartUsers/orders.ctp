@@ -16,7 +16,7 @@ if ($orders = $userManager->getOrders()) {
 	<?php
 	foreach($orders as $order) {
 		?>
-		<tr>
+		<tr onclick="loadOrderDetails(<?php echo $order['DrexCartOrder']['id'].",".$userManager->getUserId(); ?>)" style="cursor: pointer;">
 			<td><?php echo $order['DrexCartOrder']['id']; ?></td>
 			<td><?php echo date('m/d/Y H:i:s', strtotime($order['DrexCartOrder']['created_date'])); ?></td>
 			<td>Status</td>
