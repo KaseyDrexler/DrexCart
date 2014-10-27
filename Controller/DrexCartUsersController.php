@@ -57,4 +57,10 @@ class DrexCartUsersController extends DrexCartAppController {
 			}
 		}
 	}
+	
+	public function addresses() {
+		$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+		$this->DrexCartAddress->create();
+		$this->set('addresses', $this->DrexCartAddress->getAddresses($this->userManager->getUserId()));
+	}
 }
