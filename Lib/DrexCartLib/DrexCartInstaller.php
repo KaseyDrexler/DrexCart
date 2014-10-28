@@ -224,6 +224,47 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `drex_cart_gateway_users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_gateway_users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `drex_cart_users_id` INT NOT NULL,
+  `type` ENUM('authorize', 'paypal') NOT NULL,
+  `profile_id` VARCHAR(100) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_gateway_users_drex_cart_users1_idx` (`drex_cart_users_id` ASC),
+  CONSTRAINT `fk_drex_cart_gateway_users_drex_cart_users1`
+    FOREIGN KEY (`drex_cart_users_id`)
+    REFERENCES `drex_cart_users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `drex_cart_gateway_profiles`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_gateway_profiles` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `drex_cart_gateway_users_id` INT NOT NULL,
+  `account_number` VARCHAR(45) NOT NULL,
+  `profile_id` VARCHAR(100) NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `expiration` VARCHAR(45) NULL,
+  `code` VARCHAR(45) NULL,
+  `deleted` INT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_gateway_profiles_drex_cart_gateway_users1_idx` (`drex_cart_gateway_users_id` ASC),
+  CONSTRAINT `fk_drex_cart_gateway_profiles_drex_cart_gateway_users1`
+    FOREIGN KEY (`drex_cart_gateway_users_id`)
+    REFERENCES `drex_cart_gateway_users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `drex_cart_orders`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `drex_cart_orders` (
@@ -247,9 +288,11 @@ CREATE TABLE IF NOT EXISTS `drex_cart_orders` (
   `shipping_city` VARCHAR(20) NULL,
   `shipping_state` VARCHAR(20) NULL,
   `shipping_zip` VARCHAR(10) NULL,
+  `drex_cart_gateway_profiles_id` INT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_drex_cart_orders_drex_cart_users1_idx` (`drex_cart_users_id` ASC),
   INDEX `fk_drex_cart_orders_drex_cart_order_statuses1_idx` (`drex_cart_order_statuses_id` ASC),
+  INDEX `fk_drex_cart_orders_drex_cart_gateway_profiles1_idx` (`drex_cart_gateway_profiles_id` ASC),
   CONSTRAINT `fk_drex_cart_orders_drex_cart_users1`
     FOREIGN KEY (`drex_cart_users_id`)
     REFERENCES `drex_cart_users` (`id`)
@@ -258,6 +301,11 @@ CREATE TABLE IF NOT EXISTS `drex_cart_orders` (
   CONSTRAINT `fk_drex_cart_orders_drex_cart_order_statuses1`
     FOREIGN KEY (`drex_cart_order_statuses_id`)
     REFERENCES `drex_cart_order_statuses` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_drex_cart_orders_drex_cart_gateway_profiles1`
+    FOREIGN KEY (`drex_cart_gateway_profiles_id`)
+    REFERENCES `drex_cart_gateway_profiles` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -357,6 +405,7 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 					
+							
 					
 					
 					

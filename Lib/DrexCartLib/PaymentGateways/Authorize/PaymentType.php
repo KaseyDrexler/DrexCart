@@ -31,6 +31,7 @@ class PaymentType
   public function __construct($bankAccount, $creditCard)
   {
     $this->bankAccount = $bankAccount;
+    unset($this->bankAccount);
     $this->creditCard = $creditCard;
   }
 

@@ -87,7 +87,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			// update product info
 			
 			$this->userManager->loginById($orderResponse->user_id);
-			$this->redirect('/DrexCartUsers/orderDetails/'.$orderResponse->order_id);
+			//$this->redirect('/DrexCartUsers/orderDetails/'.$orderResponse->order_id);
 		}
 	}
 	
