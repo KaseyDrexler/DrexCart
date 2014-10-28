@@ -65,3 +65,6 @@
 		</div>
 	</div>
 </div>
+<?php 
+pr($userManager->getPaymentProfiles());
+?>

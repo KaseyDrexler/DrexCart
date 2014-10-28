@@ -224,6 +224,21 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `drex_cart_gateways`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_gateways` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NULL,
+  `type` ENUM('authorize', 'paypal') NOT NULL,
+  `api_login` VARCHAR(45) NULL,
+  `api_key` VARCHAR(45) NULL,
+  `wsdl_url` VARCHAR(45) NOT NULL,
+  `enabled` INT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `drex_cart_gateway_users`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `drex_cart_gateway_users` (
@@ -232,11 +247,18 @@ CREATE TABLE IF NOT EXISTS `drex_cart_gateway_users` (
   `type` ENUM('authorize', 'paypal') NOT NULL,
   `profile_id` VARCHAR(100) NOT NULL,
   `created_date` DATETIME NOT NULL,
+  `drex_cart_gateways_id` INT NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_drex_cart_gateway_users_drex_cart_users1_idx` (`drex_cart_users_id` ASC),
+  INDEX `fk_drex_cart_gateway_users_drex_cart_gateways1_idx` (`drex_cart_gateways_id` ASC),
   CONSTRAINT `fk_drex_cart_gateway_users_drex_cart_users1`
     FOREIGN KEY (`drex_cart_users_id`)
     REFERENCES `drex_cart_users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_drex_cart_gateway_users_drex_cart_gateways1`
+    FOREIGN KEY (`drex_cart_gateways_id`)
+    REFERENCES `drex_cart_gateways` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -404,6 +426,8 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+					
+					
 					
 							
 					

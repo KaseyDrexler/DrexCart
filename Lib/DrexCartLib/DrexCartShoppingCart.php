@@ -317,6 +317,7 @@ class DrexCartShoppingCart {
 			$this->DrexCartGatewayUser->save(array('DrexCartGatewayUser'=>array('drex_cart_users_id'=>$user['id'],
 																				'created_date'=>date('Y-m-d H:i:s'),
 																				'type'=>'authorize',
+																				'drex_cart_gateways_id'=>1,
 																				'profile_id'=>$soap_response->CreateCustomerProfileResult->customerProfileId)));
 			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
 			$this->DrexCartGatewayProfile->create();

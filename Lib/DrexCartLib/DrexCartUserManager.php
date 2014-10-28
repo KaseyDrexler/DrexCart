@@ -98,6 +98,11 @@ class DrexCartUserManager {
 		return $this->userdata;
 	}
 	
+	public function getPaymentProfiles() {
+		$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+		$this->DrexCartGatewayProfile->create();
+		return $this->DrexCartGatewayProfile->getPaymentProfiles($this->getUserId());
+	}
 }
 
 ?>

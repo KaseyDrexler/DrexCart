@@ -11,7 +11,26 @@ class DrexCartAdminController extends DrexCartAppController {
 	}
 	
 	public function index() {
+		if (sizeof($this->DrexCartProduct->getAllProducts(array('DrexCartProduct.enabled=1', 'DrexCartProduct.visible=1', 'DrexCartProduct.quantity>0')))<5) {
+			$this->Session->setFlash('You have less than 5 products available for users to buy!', 'default', array('class'=>'alert alert-warning'));
+		}
 		
+		$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+		$this->DrexCartGateway->create();
+		$gateways = $this->DrexCartGateway->find('all');
+		$this->set('gateways', $gateways);
+		
+		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
+		$this->DrexCartOrder->create();
+		$this->DrexCartOrderTotal = ClassRegistry::init('DrexCart.DrexCartOrderTotal');
+		$this->DrexCartOrderTotal->create();
+		$order_summary = array();
+		$order_summary['num_orders'] = $this->DrexCartOrder->find('count');
+		$sum_results = $this->DrexCartOrderTotal->find('all', array('fields'=>array('SUM(amount) as total'),
+																			    
+																				'conditions'=>array('code'=>'total')));
+		$order_summary['totals'] = $sum_results[0][0]['total'];
+		$this->set('order_summary', $order_summary);
 	}
 	
 	public function products() {
@@ -110,6 +129,53 @@ class DrexCartAdminController extends DrexCartAppController {
 	
 	public function orders() {
 		
+	}
+	
+	public function gateways() {
+		$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+		$this->DrexCartGateway->create();
+		
+		if (isset($this->params['named']['disable'])) {
+			$this->DrexCartGateway->updateAll(array('enabled'=>0),
+					array('id'=>$this->params['named']['disable']));
+		}
+		if (isset($this->params['named']['enable'])) {
+			$this->DrexCartGateway->updateAll(array('enabled'=>1),
+					array('id'=>$this->params['named']['enable']));
+		}
+		
+		
+		$gateways = $this->DrexCartGateway->find('all');
+		$this->set('gateways', $gateways);
+	}
+	
+	public function gatewayEdit($gatewayId=null) {
+		$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+		$this->DrexCartGateway->create();
+		if (!empty($this->request->data)) {
+			// form submitted
+			$this->Session->setFlash('Gateway saved!', 'default', array('class'=>'alert alert-success'));
+				
+			
+			if (is_numeric($gatewayId)) {
+				// update
+				$this->DrexCartGateway->id = $gatewayId;
+				$this->DrexCartGateway->save($this->request->data);
+			} else {
+				// insert
+				$this->DrexCartGateway->id = null;
+				$this->request->data['DrexCartGateway']['enabled'] = 1;
+				$this->DrexCartGateway->save($this->request->data);
+				$this->redirect('/DrexCartAdmin/gatewayEdit/');
+			}
+				
+		}
+		
+		if (is_numeric($gatewayId) && $gatewayId>0) {
+			$gateway = $this->DrexCartGateway->getGatewayById($gatewayId);
+			$this->set('gateway', $gateway);
+			$this->request->data['DrexCartGateway'] = $gateway['DrexCartGateway'];
+		}
 	}
 	
 }
