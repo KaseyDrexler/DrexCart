@@ -436,7 +436,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 					
 					INSERT INTO `findy2_drexcart`.`drex_cart_order_statuses` (`status_name`) VALUES ('Entered');
 					INSERT INTO `findy2_drexcart`.`drex_cart_product_types` (`product_type`, `product_type_name`, `shippable`) VALUES ('DVD', 'DVD', 1);
-					
+					INSERT INTO `drex_cart_gateways` (`id`,`name`,`type`,`api_login`,`api_key`,`wsdl_url`,`enabled`) VALUES (1,'Dev Authorize.net','authorize','9eFfhH98Uz','38UAqh26T7U3gc4y','https://apitest.authorize.net/soap/v1/Service',1);
 					
 					");
 			return true;
