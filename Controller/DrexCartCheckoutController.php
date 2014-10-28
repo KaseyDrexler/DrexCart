@@ -91,4 +91,10 @@ class DrexCartCheckoutController extends DrexCartAppController {
 		}
 	}
 	
+	public function payment() {
+		$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+		$this->DrexCartGateway->create();
+		$this->set('gateways', $this->DrexCartGateway->find('all', array('conditions'=>array('enabled'=>1))));
+	}
+	
 }

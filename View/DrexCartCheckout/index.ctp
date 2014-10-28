@@ -148,33 +148,10 @@
 			<div class="panel-heading">
 				<p class="panel-title">Payment Information</p>
 			</div>
-			<div class="panel-body">
-				<div class="row">
-					<div class="col-md-12">
-						Name on the card<br />
-						<?php echo $this->Form->input('DrexCartPaymentProfile.fullname', array('label'=>false, 'class'=>'form-control')); ?>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12">
-						Card number<br />
-						<?php echo $this->Form->input('DrexCartPaymentProfile.card_number', array('label'=>false, 'class'=>'form-control')); ?>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						Expiration<br />
-						<?php echo $this->Form->month('DrexCartPaymentProfile.exp_month', array('label'=>false, 'empty'=>false, 'class'=>'form-control')); ?>
-					</div>
-					<div class="col-md-4">
-						&nbsp;<br />
-						<?php echo $this->Form->year('DrexCartPaymentProfile.exp_year', date('Y'), date('Y')+8, array('label'=>false, 'empty'=>false, 'class'=>'form-control')); ?>
-					</div>
-					<div class="col-md-4">
-						CVC<br />
-						<?php echo $this->Form->input('DrexCartPaymentProfile.cvc', array('label'=>false, 'class'=>'form-control')); ?>
-					</div>
-				</div>
+			<div class="panel-body" id="panel_payment">
+				<script type="text/javascript">
+				<?php echo $this->Js->request('/DrexCartCheckout/payment', array('update'=>'#panel_payment', 'async'=>false, 'buffer'=>false)); ?>
+				</script>
 			</div>
 		</div>
 	</div>
