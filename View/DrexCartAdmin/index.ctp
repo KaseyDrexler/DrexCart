@@ -13,7 +13,9 @@ if (sizeof($gateways)==0) {
 	<div class="col-md-6">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<p class="panel-title">Order Summary</p>
+				<p class="panel-title">Order Summary
+				<?php echo $this->Html->link('View All', '/DrexCartAdmin/orders/', array('class'=>'pull-right btn btn-link')); ?>
+				</p>
 			</div>
 			<div class="panel-body">
 				<p><b>Number of Orders:</b> <?php echo $order_summary['num_orders']; ?></p>
@@ -27,7 +29,10 @@ if (sizeof($gateways)==0) {
 	<div class="col-md-6">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<p class="panel-title">Users Summary</p>
+				<p class="panel-title">Users Summary 
+				<?php echo $this->Html->link('View All', '/DrexCartAdmin/customers/', array('class'=>'pull-right btn btn-link')); ?>
+				</p>
+				
 			</div>
 			<div class="panel-body">
 				<p><b>Number of Users:</b> <?php echo $num_users; ?></p>
