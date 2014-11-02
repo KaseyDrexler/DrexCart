@@ -2,7 +2,7 @@
 
 
 class DrexCartAdminController extends DrexCartAppController {
-	var $uses = array('DrexCart.DrexCartProduct', 'DrexCart.DrexCartProductType');
+	var $uses = array('DrexCart.DrexCartProduct', 'DrexCart.DrexCartProductType', 'DrexCart.DrexCartUser', 'DrexCart.DrexCartOrder', 'DrexCart.DrexCartOrderTotal');
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -124,11 +124,13 @@ class DrexCartAdminController extends DrexCartAppController {
 	}
 	
 	public function customers() {
-		
+		$this->set('users', $this->DrexCartUser->find('all'));
 	}
 	
 	public function orders() {
-		
+		$this->set('orders', $this->DrexCartOrder->find('all', array('fields'=>array('DrexCartOrder.*', 'DrexCartOrderTotal.*', 'DrexCartUser.*'),
+																	 'joins'=>array(array('table'=>'drex_cart_order_totals', 'alias'=>'DrexCartOrderTotal', 'type'=>'left', 'conditions'=>array('DrexCartOrderTotal.code'=>'total', 'DrexCartOrderTotal.drex_cart_orders_id=DrexCartOrder.id'))),
+																	 'order'=>array('DrexCartOrder.created_date'=>'desc'))));
 	}
 	
 	public function gateways() {
