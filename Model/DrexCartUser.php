@@ -44,4 +44,9 @@ class DrexCartUser extends DrexCartAppModel {
 	public function getUserByEmail($email=null) {
 		return $this->find('first', array('conditions'=>array('email'=>$email)));
 	}
+	
+	public function getUsersCreatedCount() {
+		return $this->find('all', array('fields'=>array('count(*) as thecount', 'date(DrexCartUser.created_date) as thedate'),
+										'conditions'=>array('DrexCartUser.created_date>\''.date('Y-m-d 00:00:00', time()-86400*7).'\'')));
+	}
 }

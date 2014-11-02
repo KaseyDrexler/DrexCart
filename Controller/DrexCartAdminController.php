@@ -31,6 +31,11 @@ class DrexCartAdminController extends DrexCartAppController {
 																				'conditions'=>array('code'=>'total')));
 		$order_summary['totals'] = $sum_results[0][0]['total'];
 		$this->set('order_summary', $order_summary);
+		
+		$this->set('order_totals', $this->DrexCartOrderTotal->getOrderTotalsSumed());
+		
+		$this->set('num_users', $this->DrexCartUser->find('count'));
+		$this->set('user_counts', $this->DrexCartUser->getUsersCreatedCount());
 	}
 	
 	public function products() {
