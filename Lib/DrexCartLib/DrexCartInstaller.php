@@ -232,7 +232,7 @@ CREATE TABLE IF NOT EXISTS `drex_cart_gateways` (
   `type` ENUM('authorize', 'paypal') NOT NULL,
   `api_login` VARCHAR(45) NULL,
   `api_key` VARCHAR(45) NULL,
-  `wsdl_url` VARCHAR(45) NOT NULL,
+  `wsdl_url` VARCHAR(100) NOT NULL,
   `enabled` INT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
@@ -423,9 +423,39 @@ CREATE TABLE IF NOT EXISTS `drex_cart_order_totals` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `drex_cart_order_payments`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `drex_cart_order_payments` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `drex_cart_orders_id` INT NOT NULL,
+  `drex_cart_gateway_profiles_id` INT NOT NULL,
+  `created_date` DATETIME NOT NULL,
+  `amount` DECIMAL(10,5) NOT NULL,
+  `captured_date` DATETIME NULL,
+  `captured_amount` DECIMAL(10,5) NULL,
+  `transaction_id` VARCHAR(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_drex_cart_order_payments_drex_cart_orders1_idx` (`drex_cart_orders_id` ASC),
+  INDEX `fk_drex_cart_order_payments_drex_cart_gateway_profiles1_idx` (`drex_cart_gateway_profiles_id` ASC),
+  CONSTRAINT `fk_drex_cart_order_payments_drex_cart_orders1`
+    FOREIGN KEY (`drex_cart_orders_id`)
+    REFERENCES `drex_cart_orders` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_drex_cart_order_payments_drex_cart_gateway_profiles1`
+    FOREIGN KEY (`drex_cart_gateway_profiles_id`)
+    REFERENCES `drex_cart_gateway_profiles` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+					
+					
 					
 					
 					
@@ -436,7 +466,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 					
 					INSERT INTO `findy2_drexcart`.`drex_cart_order_statuses` (`status_name`) VALUES ('Entered');
 					INSERT INTO `findy2_drexcart`.`drex_cart_product_types` (`product_type`, `product_type_name`, `shippable`) VALUES ('DVD', 'DVD', 1);
-					INSERT INTO `drex_cart_gateways` (`id`,`name`,`type`,`api_login`,`api_key`,`wsdl_url`,`enabled`) VALUES (1,'Dev Authorize.net','authorize','9eFfhH98Uz','38UAqh26T7U3gc4y','https://apitest.authorize.net/soap/v1/Service',1);
+					INSERT INTO `drex_cart_gateways` (`id`,`name`,`type`,`api_login`,`api_key`,`wsdl_url`,`enabled`) VALUES (1,'Dev Authorize.net','authorize','9eFfhH98Uz','38UAqh26T7U3gc4y','https://apitest.authorize.net/soap/v1/Service.asmx?WSDL',1);
 					
 					");
 			return true;

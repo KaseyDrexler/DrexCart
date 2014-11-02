@@ -2,7 +2,7 @@
 
 class DrexCartCheckoutController extends DrexCartAppController {
 	
-	public $uses = array('DrexCart.DrexCartOrder', 'DrexCart.DrexCartUser');
+	public $uses = array('DrexCart.DrexCartOrder', 'DrexCart.DrexCartUser', 'DrexCart.DrexCartGatewayProfile');
 	
 	public function beforeFilter() {
 		parent::beforeFilter();
@@ -20,6 +20,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			$unvalidated = array();
 			
+			// User validation
 			if ($this->request->data['DrexCartOrder']['create_user']==0 || $this->userManager->isLoggedIn()) {
 				$this->DrexCartUser->validate['email'] = null;
 				$this->DrexCartUser->validate['password'] = null;
@@ -33,6 +34,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 				}
 			}
 			
+			// Order validation
 			$this->DrexCartOrder->set($this->request->data);
 			if ($this->DrexCartOrder->validates()) {
 				
@@ -41,6 +43,15 @@ class DrexCartCheckoutController extends DrexCartAppController {
 				
 				$unvalidated = array_merge($this->DrexCartUser->validationErrors);
 			}
+			
+			// Payment validation
+			$this->DrexCartGatewayProfile->set($this->request->data);
+			if ($this->DrexCartGatewayProfile->validates()) {
+				$this->Session->write('DrexCartGatewayProfile', $this->request->data['DrexCartGatewayProfile']);
+			} else {
+				$unvalidated = array_merge($this->DrexCartGatewayProfile->validationErrors);
+			}
+			
 			
 			
 			if ($unvalidated) {
@@ -87,7 +98,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			// update product info
 			
 			$this->userManager->loginById($orderResponse->user_id);
-			//$this->redirect('/DrexCartUsers/orderDetails/'.$orderResponse->order_id);
+			$this->redirect('/DrexCartUsers/orderDetails/'.$orderResponse->order_id);
 		}
 	}
 	

@@ -68,6 +68,14 @@ class ProfileTransactionType
     $this->profileTransAuthCapture = $profileTransAuthCapture;
     $this->profileTransRefund = $profileTransRefund;
     $this->profileTransPriorAuthCapture = $profileTransPriorAuthCapture;
+    
+    if (!$profileTransVoid) unset($this->profileTransVoid);
+    if (!$profileTransAuthOnly) unset($this->profileTransAuthOnly);
+    if (!$profileTransCaptureOnly) unset($this->profileTransCaptureOnly);
+    if (!$profileTransAuthCapture) unset($this->profileTransAuthCapture);
+    if (!$profileTransRefund) unset($this->profileTransRefund);
+    if (!$profileTransPriorAuthCapture) unset($this->profileTransPriorAuthCapture);
+    
   }
 
 }

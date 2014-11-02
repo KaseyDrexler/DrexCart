@@ -2,7 +2,7 @@
 
 <?php $order = $this->Session->read('DrexCartOrder'); ?>
 <?php $user = $this->Session->read('DrexCartUser'); ?>
-
+<?php $payment = $this->Session->read('DrexCartGatewayProfile'); ?>
 
 
 <div class="row">
@@ -36,9 +36,18 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-11">
-	
+	<div class="col-md-6">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<div class="panel-title">Payment Information</div>
+			</div>
+			<div class="panel-body">
+				<p><b>Card Number: </b> <?php echo '************'.substr($payment['account_number'], 12); ?></p>
+				<p><b>Expiration: </b> <?php echo $payment['expiration']; ?></p>
+			</div>
+		</div>
 	</div>
+	<div class="col-md-5"></div>
 	<div class="col-md-1">
 		<?php echo $this->Form->create(); ?>
 		<?php echo $this->Form->hidden('test'); ?>

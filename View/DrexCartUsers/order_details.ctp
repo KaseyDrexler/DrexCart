@@ -97,5 +97,69 @@
 		</table>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h1 class="panel-title">Payment Information</h1>
+			</div>
+			<div class="panel-body">
+				<table class="table table-condensed table-hover">
+					<tr>
+						<th><span style="font-size:10px;">Card</span></th>
+						<th><span style="font-size:10px;">Payment Date</span></th>
+						<th><span style="font-size:10px;">Amount</span></th>
+						<th><span style="font-size:10px;">Transaction ID</span></th>
+						<th><span style="font-size:10px;">Funds Applied</span></th>
+					</tr>
+					<?php 
+					foreach($order_payments as $payment) {
+					?>
+					<tr>
+						<td><span style="font-size:10px;"><?php echo substr($payment['DrexCartGatewayProfile']['account_number'], strlen($payment['DrexCartGatewayProfile']['account_number'])-4); ?></span></td>
+						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($payment['DrexCartOrderPayment']['created_date'])); ?></span></td>
+						<td align="right"><span style="font-size:10px;">$<?php echo number_format($payment['DrexCartOrderPayment']['amount'],2); ?></span></td>
+						<td><span style="font-size:10px;"><?php echo $payment['DrexCartOrderPayment']['transaction_id']; ?></span></td>
+						<td><span style="font-size:10px;"><?php echo ($payment['DrexCartOrderPayment']['captured_date']) ? date('m/d/Y H:i:s', strtotime($payment['DrexCartOrderPayment']['captured_date'])) : ''; ?></span></td>
+					</tr>
+					<?php 
+					}
+					?>
+				</table>
+				<?php //pr($order_payments); ?>
+			</div>
+		</div>
+		
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h1 class="panel-title">Status History</h1>
+			</div>
+			<div class="panel-body">
+				<table class="table table-condensed table-hover">
+					<tr>
+						<th><span style="font-size:10px;">Status</span></th>
+						<th><span style="font-size:10px;">Date</th>
+						<th><span style="font-size:10px;">Note</th>
+					</tr>
+					<?php 
+					foreach($order_history as $history) {
+					?>
+					<tr>
+						<td><span style="font-size:10px;"><?php echo $history['DrexCartOrderStatus']['status_name']; ?></span></td>
+						<td><span style="font-size:10px;"><?php echo $history['DrexCartOrderStatusHistory']['status_date']; ?></span></td>
+						<td><span style="font-size:10px;"><?php echo $history['DrexCartOrderStatusHistory']['note']; ?></span></td>
+					</tr>
+					<?php 
+					}
+					?>
+				</table>
+				<?php //pr($order_history); ?>
+			</div>
+		</div>
+		
+	</div>
+</div>
 
 <?php //pr($order); ?>

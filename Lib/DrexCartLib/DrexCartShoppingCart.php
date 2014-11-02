@@ -1,14 +1,6 @@
 <?php
 
-App::uses('ServiceCustom', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('CreditCardType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('CustomerProfileType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('CustomerPaymentProfileType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('PaymentType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('CreateCustomerProfile', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-App::uses('MerchantAuthenticationType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
-
-App::uses('DriversLicenseType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
+App::uses('AuthorizePaymentModule', 'DrexCart.DrexCartLib/Modules/Payment');
 
 class DrexCartShoppingCart {
 	
@@ -126,8 +118,9 @@ class DrexCartShoppingCart {
 				$user_id = $this->DrexCartUser->id;
 				$user['id'] = $user_id;
 				$was_logged_in = false;
-				if ($acct = $this->createGatewayCustomer($user, array('card_number'=>'4111111111111111', 'card_cvc'=>'123', 'card_exp'=>'2017-09'))) {
+				if ($transaction = $this->createGatewayCustomer($user, $order)) {
 					// todo save customer info
+					
 					$payment_ok = true;
 				} else {
 					$this->DrexCartUser->deleteAll(array('id'=>$user_id));
@@ -193,10 +186,20 @@ class DrexCartShoppingCart {
 				$order['drex_cart_users_id'] = $user_id;
 				$order['created_date'] = date('Y-m-d H:i:s');
 				$order['drex_cart_order_statuses_id'] = 1;
-				$order['drex_cart_gateway_profiles_id'] = $acct->drex_cart_gateway_profiles_id;
+				//$order['drex_cart_gateway_profiles_id'] = $acct->drex_cart_gateway_profiles_id;
 				//pr($order);
 				$this->DrexCartOrder->save(array('DrexCartOrder'=>$order));
 				$order_id = $this->DrexCartOrder->id;
+				
+				// stamp order to payments
+				$this->DrexCartOrderPayment = ClassRegistry::init('DrexCart.DrexCartOrderPayment');
+				$this->DrexCartOrderPayment->create();
+				$this->DrexCartOrderPayment->id = null;
+				$this->DrexCartOrderPayment->save(array('DrexCartOrderPayment'=>array('drex_cart_orders_id'=>$order_id,
+						'drex_cart_gateway_profiles_id'=>$transaction['id'],
+						'created_date'=>date('Y-m-d H:i:s'),
+						'amount'=>$this->getCartTotal(),
+						'transaction_id'=>$transaction['transaction_id'])));
 				
 				// order totals
 				$order_amount = $this->getCartTotal();
@@ -233,6 +236,7 @@ class DrexCartShoppingCart {
 				$this->DrexCartCartProduct->deleteAll(array('drex_cart_carts_id'=>$this->drexcart_id));
 				CakeSession::delete('DrexCartUser');
 				CakeSession::delete('DrexCartOrder');
+				CakeSession::delete('DrexCartGatewayProfile');
 				$orderResponse = new stdClass();
 				$orderResponse->user_id = $user_id;
 				$orderResponse->order_id = $order_id;
@@ -272,75 +276,54 @@ class DrexCartShoppingCart {
 			CakeSession::write('drexcart_id', $this->drexcart_id);
 	}
 	
-	public function createGatewayCustomer($user=null, $paymentInfo=null) {
-		$soap = new ServiceCustom((Configure::read('debug')>0) ? array('trace'=>1) : array(''), 'https://apitest.authorize.net/soap/v1/Service.asmx?WSDL');
-		$credit_card = new CreditCardType($paymentInfo['card_cvc']);
-		$credit_card->cardNumber = $paymentInfo['card_number'];
-		$credit_card->expirationDate = $paymentInfo['card_exp'];
+	public function createGatewayCustomer($user=null, $orderInfo=null) {
 		
-		$dl = new DriversLicenseType('11111111111', '1979-01-01');
-		$dl->state = 'IA';
-		
-		
-		$cc_profile_type = new CustomerPaymentProfileType(new PaymentType(null, $credit_card), $dl, null);
-		$cc_profile_type->billTo = new stdClass();
-		$cc_profile_type->billTo->firstName = $user['firstname'];
-		$cc_profile_type->billTo->lastName = $user['lastname'];
-		$cc_profile_type->billTo->address = '1908 Probst CT SW';
-		$cc_profile_type->billTo->city = 'Cedar Rapids';
-		$cc_profile_type->billTo->state = 'IA';
-		$cc_profile_type->billTo->zip = '52404';
-
-		$cc_profile_type->billTo->country = 'United States';
-		$cc_profile_type->billTo->phoneNumber = '9999999999';
-		$cc_profile_type->taxId = '';
-
-		
-		$cc_profile_type->customerType = 'individual';
-		
-		$profile = new CustomerProfileType(array($cc_profile_type), null);
-		$profile->merchantCustomerId = 'DC'.$user['id'];
-		$profile->email = $user['email'];
-		$profile->description = 'DrexCartUser';
-		
-		$cx_profile = new CreateCustomerProfile(new MerchantAuthenticationType('9eFfhH98Uz', '38UAqh26T7U3gc4y'), $profile, 'testMode');
-		//pr($cx_profile);
-		$soap_response = $soap->CreateCustomerProfile($cx_profile);
-		//pr($soap->__getLastRequest());
-		//pr($soap->__getLastResponse());
-		//pr($soap_response);
-		
-		if ($soap_response->CreateCustomerProfileResult->customerProfileId && $soap_response->CreateCustomerProfileResult->resultCode=='Ok') {
-			$this->DrexCartGatewayUser = ClassRegistry::init('DrexCart.DrexCartGatewayUser');
-			$this->DrexCartGatewayUser->create();
-			$this->DrexCartGatewayUser->id = null;
-			$this->DrexCartGatewayUser->save(array('DrexCartGatewayUser'=>array('drex_cart_users_id'=>$user['id'],
-																				'created_date'=>date('Y-m-d H:i:s'),
-																				'type'=>'authorize',
-																				'drex_cart_gateways_id'=>1,
-																				'profile_id'=>$soap_response->CreateCustomerProfileResult->customerProfileId)));
-			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
-			$this->DrexCartGatewayProfile->create();
-			$this->DrexCartGatewayProfile->id = null;
-			$this->DrexCartGatewayProfile->save(array('DrexCartGatewayProfile'=>array('drex_cart_gateway_users_id'=>$this->DrexCartGatewayUser->id,
-					'created_date'=>date('Y-m-d H:i:s'),
-					'account_number'=>'************'.substr($paymentInfo['card_number'],12),
-					'expiration'=>$paymentInfo['card_exp'],
-					'code'=>$paymentInfo['card_cvc'],
-					'profile_id'=>$soap_response->CreateCustomerProfileResult->customerPaymentProfileIdList->long)));
-				
-			$acct = new stdClass();
-			$acct->drex_cart_gateway_users_id = $this->DrexCartGatewayUser->id;
-			$acct->drex_cart_gateway_profiles_id = $this->DrexCartGatewayProfile->id;
-			$acct->profile_id = $soap_response->CreateCustomerProfileResult->customerProfileId;
-			$acct->payment_profile_id = isset($soap_response->CreateCustomerProfileResult->customerPaymentProfileIdList) &&
-										isset($soap_response->CreateCustomerProfileResult->customerPaymentProfileIdList->long) ? 
-										$soap_response->CreateCustomerProfileResult->customerPaymentProfileIdList->long :
-										null;
-			return $acct;
-		
+		// figure out what payment method was used
+		$paymentInfo = CakeSession::read('DrexCartGatewayProfile');
+		$gatewayId = $paymentInfo['drex_cart_gateways_id'];
+		$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+		$this->DrexCartGateway->create();
+		$gateway = $this->DrexCartGateway->getGatewayById($gatewayId);
+		if ($gateway) {
+			if ($gateway['DrexCartGateway']['type']=='authorize') {
+				// authorize.net for credit cards
+				$paymentModule = new AuthorizePaymentModule($gatewayId, $gateway['DrexCartGateway']['wsdl_url'], $gateway['DrexCartGateway']['api_login'], $gateway['DrexCartGateway']['api_key']);
+			} else if ($gateway['DrexCartGateway']['type']=='paypal') {
+				// paypal
+			}
 		}
-		return false;
+		
+		
+		
+		if ($userProfileId = $paymentModule->createCustomer($user)) {
+			//echo 'userProfileId: '.$userProfileId;
+		} else {
+			$errorMessage = '';
+			foreach ($paymentModule->errors as $error) {
+				$errorMessage .= $error.'<br />';
+			}
+			throw new Exception($errorMessage);
+		}
+		
+		
+		if ($userCardProfileId = $paymentModule->addCard($userProfileId, $paymentInfo, $orderInfo)) {
+			//echo '<br /> userCartProfileId: '.$userCardProfileId;
+		} else {
+			$errorMessage = '';
+			foreach ($paymentModule->errors as $error) {
+				$errorMessage .= $error.'<br />';
+			}
+			throw new Exception($errorMessage);
+		}
+		
+		
+		//exit;
+
+		$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $this->getCartTotal());
+		
+		
+		return $transactionId;
+
 		/*
 		$soap->CreateCustomerProfile(new CreateCustomerPaymentProfile(new MerchantAuthenticationType('9eFfhH98Uz', '38UAqh26T7U3gc4y'), 
 																	  null, 
