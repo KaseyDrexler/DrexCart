@@ -72,7 +72,7 @@ if (sizeof($gateways)==0) {
 <?php echo $this->Html->script('DrexCart.plugin/flot/jquery.flot.orderBar.js'); ?>
 <?php echo $this->Html->script('DrexCart.plugin/flot/jquery.flot.pie.js'); ?>
 <?php echo $this->Html->script('DrexCart.plugin/flot/jquery.flot.tooltip.js'); ?>
-
+<?php //pr($order_totals); ?>
 
 
 <script type="text/javascript">
@@ -110,8 +110,9 @@ $(document).ready(function () {
 		for($days_back = 7; $days_back>=0; $days_back--) {
 			$data[(strtotime(date('Y-m-d', time()))-86400*$days_back).'000'] = 0;
 		}
+		//pr($data);
 		foreach($order_totals[0] as $ot) {
-			$data[(strtotime($ot['thedate'])).'000'] += $ot['amount'];
+			$data[(strtotime($ot['thedate'])).'000'] = $ot['amount'];
 		}
 		
 		?>
@@ -201,7 +202,7 @@ $(document).ready(function () {
 			$data[(strtotime(date('Y-m-d', time()))-86400*$days_back).'000'] = 0;
 		}
 		foreach($user_counts[0] as $uc) {
-			$data[(strtotime($uc['thedate'])).'000'] += $uc['thecount'];
+			$data[(strtotime($uc['thedate'])).'000'] = $uc['thecount'];
 		}
 		
 		?>
