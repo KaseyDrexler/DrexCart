@@ -12,30 +12,40 @@
 		<th class="text-right"></th>
 	</tr>
 	<?php 
-	foreach($cart_products as $cart_product) {
+	if (sizeof($cart_products)>0) {
+		foreach($cart_products as $cart_product) {
+			?>
+			<tr>
+				<td><?php echo $this->Html->image('drexcart/'.$cart_product['DrexCartProduct']['main_thumb_image']); ?></td>
+				<td><?php echo $this->Html->link($cart_product['DrexCartProduct']['name'], '/DrexCartProducts/productDetails/'.$cart_product['DrexCartProduct']['id']); ?></td>
+				<td class="text-center" style="width:50px;"><input type="text" class="form-control input-hover" name="quantity[<?php echo $cart_product['DrexCartCartProduct']['id']; ?>]" value="<?php echo $cart_product['DrexCartCartProduct']['quantity']; ?>" /></td>
+				<td class="text-right">$<?php echo number_format($cart_product['DrexCartProduct']['rate'], 2); ?></td>
+				<td class="text-right">$<?php echo number_format($cart_product['DrexCartCartProduct']['quantity']*$cart_product['DrexCartCartProduct']['rate'], 2); ?></td>
+				<td class="text-right"><?php echo $this->Html->link('Delete', '/DrexCartCarts/delete/'.$cart_product['DrexCartCartProduct']['id'], array('class'=>'btn btn-default btn-xs')); ?></td>
+			</tr>
+			<?php
+		}
 		?>
 		<tr>
-			<td><?php echo $this->Html->image('drexcart/'.$cart_product['DrexCartProduct']['main_thumb_image']); ?></td>
-			<td><?php echo $this->Html->link($cart_product['DrexCartProduct']['name'], '/DrexCartProducts/productDetails/'.$cart_product['DrexCartProduct']['id']); ?></td>
-			<td class="text-center" style="width:50px;"><input type="text" class="form-control input-hover" name="quantity[<?php echo $cart_product['DrexCartCartProduct']['id']; ?>]" value="<?php echo $cart_product['DrexCartCartProduct']['quantity']; ?>" /></td>
-			<td class="text-right">$<?php echo number_format($cart_product['DrexCartProduct']['rate'], 2); ?></td>
-			<td class="text-right">$<?php echo number_format($cart_product['DrexCartCartProduct']['quantity']*$cart_product['DrexCartCartProduct']['rate'], 2); ?></td>
-			<td class="text-right"><?php echo $this->Html->link('Delete', '/DrexCartCarts/delete/'.$cart_product['DrexCartCartProduct']['id'], array('class'=>'btn btn-default btn-xs')); ?></td>
+			<th></th>
+			<th></th>
+			<th></th>
+			<th class="text-right">Total:</th>
+			<th class="text-right">$<?php echo number_format($cart_total, 2); ?></th>
+			<th></th>
 		</tr>
-		<?php
+		<?php 
+	} else {
+		?>
+		<tr>
+			<td colspan="6" class="text-danger">No products in your cart!</td>
+		</tr>
+		<?php 
 	}
 	?>
-	<tr>
-		<th></th>
-		<th></th>
-		<th></th>
-		<th class="text-right">Total:</th>
-		<th class="text-right">$<?php echo number_format($cart_total, 2); ?></th>
-		<th></th>
-	</tr>
 </table>
 
-<p class="text-right">
+<p class="text-right" style="margin-top:50px;">
 	<?php echo $this->Form->button('Update Cart', array('class'=>'btn btn-default')); ?>
 	<?php echo $this->Html->link('Checkout', '/DrexCartCheckout/index', array('class'=>'btn btn-warning')); ?>
 

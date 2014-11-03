@@ -1,3 +1,4 @@
+use Joomla\Registry\Format\Php;
 <h1>Checkout</h1>
 
 <?php echo $this->Form->create('DrexCartOrder'); ?>
@@ -40,6 +41,105 @@
 				<p class="panel-title">Billing Information</p>
 			</div>
 			<div class="panel-body">
+				<?php 
+				if ($userManager->isLoggedIn()) {
+					$addresses = $userManager->getAddresses();
+					$defaultBillingAddress = $userManager->getBillingAddress();
+					$defaultShippingAddress = $userManager->getShippingAddress();
+					
+					
+					?>
+					
+					<table class="table table-hover">
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Address</th>
+						</tr>
+						<?php 
+						if (isset($addresses)) {
+							foreach($addresses as $address) {
+					
+							?>
+							<tr>
+								<td><input type="radio" name="data[DrexCartOrder][default_billing_id]" value="<?php echo $address['DrexCartAddress']['id']; ?>" onclick="$('#panel_new_billing').fadeOut();" <?php 
+								if ($address['DrexCartAddress']['id']==$defaultBillingAddress['DrexCartAddress']['id']) {
+									echo ' checked="checked"';
+								}
+								?> /></td>
+								<td><?php echo $address['DrexCartAddress']['firstname'] . ' ' . $address['DrexCartAddress']['lastname']; ?></td>
+								<td><?php echo $address['DrexCartAddress']['address1']; ?><br />
+									<?php echo $address['DrexCartAddress']['address2'] ? $address['DrexCartAddress']['address2'].'<br />' : ''; ?>
+									<?php echo $address['DrexCartAddress']['city']; ?>, <?php echo $address['DrexCartAddress']['state']; ?> <?php echo $address['DrexCartAddress']['zip']; ?>
+									</td>
+								
+								
+							</tr>
+							<?php 
+							}
+							?>
+							<tr>
+								<td><input type="radio" id="billing_address" value="new" name="data[DrexCartOrder][default_billing_id]" /></td>
+								<td colspan="2">
+									<p class="text-success">New Billing Address</p>
+									<div id="panel_new_billing">
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6">
+												First Name<br />
+												<?php echo $this->Form->input('billing_firstname', array('id'=>'billing_firstname', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'First Name')); ?>
+											</div>
+											<div class="col-md-6">
+												Last Name<br />
+												<?php echo $this->Form->input('billing_lastname', array('id'=>'billing_lastname', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Last Name')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												Address Line 1<br />
+												<?php echo $this->Form->input('billing_address1', array('id'=>'billing_address1', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Address')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												Address Line 2<br />
+												<?php echo $this->Form->input('billing_address2', array('id'=>'billing_address2', 'label'=>false, 'class'=>"form-control")); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												City<br />
+												<?php echo $this->Form->input('billing_city', array('id'=>'billing_city', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'City')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6">
+												State<br />
+												<?php echo $this->Form->select('billing_state', $DCFunctions->getStatesList(), array('id'=>'billing_state', 'empty'=>false, 'label'=>false, 'class'=>"form-control")); ?>
+											</div>
+											<div class="col-md-6">
+												Zip<br />
+												<?php echo $this->Form->input('billing_zip', array('id'=>'billing_zip', 'maxchars'=>10, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Zip Code')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6 text-right">
+												Contact Phone Number
+											</div>
+											<div class="col-md-6">
+												<?php echo $this->Form->input('billing_phone', array('id'=>'billing_phone', 'maxchars'=>14, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Phone #')); ?>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<?php 
+						}
+						?>
+					</table>
+					
+					<?php
+				} else {
+				?>
 				<div class="row" style="margin-top:10px;">
 					<div class="col-md-6">
 						First Name<br />
@@ -86,6 +186,9 @@
 						<?php echo $this->Form->input('billing_phone', array('id'=>'billing_phone', 'maxchars'=>14, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Phone #')); ?>
 					</div>
 				</div>
+				<?php 
+				}
+				?>
 			</div>
 		</div>
 	</div>
@@ -96,6 +199,100 @@
 				<span class="pull-right"><?php echo $this->Form->checkbox('copy_address', array('label'=>false, 'id'=>'copy_address')); ?></span>
 			</div>
 			<div class="panel-body">
+				
+				<?php 
+				if ($userManager->isLoggedIn()) {
+					?>
+					<table class="table table-hover">
+						<tr>
+							<th></th>
+							<th>Name</th>
+							<th>Address</th>
+						</tr>
+						<?php 
+						if (isset($addresses)) {
+							foreach($addresses as $address) {
+					
+							?>
+							<tr>
+								<td><input type="radio" name="data[DrexCartOrder][default_shipping_id]" value="<?php echo $address['DrexCartAddress']['id']; ?>" onclick="$('#panel_new_shipping').fadeOut();" <?php 
+								if ($address['DrexCartAddress']['id']==$defaultShippingAddress['DrexCartAddress']['id']) {
+									echo ' checked="checked"';
+								}
+								?> /></td>
+								<td><?php echo $address['DrexCartAddress']['firstname'] . ' ' . $address['DrexCartAddress']['lastname']; ?></td>
+								<td><?php echo $address['DrexCartAddress']['address1']; ?><br />
+									<?php echo $address['DrexCartAddress']['address2'] ? $address['DrexCartAddress']['address2'].'<br />' : ''; ?>
+									<?php echo $address['DrexCartAddress']['city']; ?>, <?php echo $address['DrexCartAddress']['state']; ?> <?php echo $address['DrexCartAddress']['zip']; ?>
+									</td>
+								
+								
+							</tr>
+							<?php 
+							}
+							?>
+							<tr>
+								<td><input type="radio" id="shipping_address" value="new" name="data[DrexCartOrder][default_shipping_id]" /></td>
+								<td colspan="2">
+									<p class="text-success">New Shipping Address</p>
+									<div id="panel_new_shipping">
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6">
+												First Name<br />
+												<?php echo $this->Form->input('shipping_firstname', array('id'=>'shipping_firstname', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'First Name')); ?>
+											</div>
+											<div class="col-md-6">
+												Last Name<br />
+												<?php echo $this->Form->input('shipping_lastname', array('id'=>'shipping_lastname', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Last Name')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												Address Line 1<br />
+												<?php echo $this->Form->input('shipping_address1', array('id'=>'shipping_address1', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Address')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												Address Line 2<br />
+												<?php echo $this->Form->input('shipping_address2', array('id'=>'shipping_address2', 'label'=>false, 'class'=>"form-control")); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-12">
+												City<br />
+												<?php echo $this->Form->input('shipping_city', array('id'=>'shipping_city', 'label'=>false, 'class'=>"form-control", 'placeholder'=>'City')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6">
+												State<br />
+												<?php echo $this->Form->select('shipping_state', $DCFunctions->getStatesList(), array('id'=>'shipping_state', 'empty'=>false, 'label'=>false, 'class'=>"form-control")); ?>
+											</div>
+											<div class="col-md-6">
+												Zip<br />
+												<?php echo $this->Form->input('shipping_zip', array('id'=>'shipping_zip', 'maxchars'=>10, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Zip Code')); ?>
+											</div>
+										</div>
+										<div class="row" style="margin-top:10px;">
+											<div class="col-md-6 text-right">
+												Contact Phone Number
+											</div>
+											<div class="col-md-6">
+												<?php echo $this->Form->input('shipping_phone', array('id'=>'shipping_phone', 'maxchars'=>14, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Phone #')); ?>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<?php 
+						}
+						?>
+					</table>
+					<?php 
+
+				} else {
+				?>
 				<div class="row" style="margin-top:10px;">
 					<div class="col-md-6">
 						First Name<br />
@@ -134,7 +331,9 @@
 						<?php echo $this->Form->input('shipping_zip', array('id'=>'shipping_zip', 'maxchars'=>10, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Zip Code')); ?>
 					</div>
 				</div>
-				
+				<?php 
+				}
+				?>
 			</div>
 		</div>
 	</div>
@@ -165,13 +364,31 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('#chk_create_account').on('change', function () {
-			if ($(this).is(':checked')) {
-				$('#panel_create_account').fadeIn();
-			} else {
-				$('#panel_create_account').fadeOut();
-			}
-		});
+		<?php
+		if (isset($userManager) && $userManager->isLoggedIn()) {
+			?>
+			$('#chk_create_account').on('change', function () {
+				if ($(this).is(':checked')) {
+					$('#panel_create_account').fadeIn();
+				} else {
+					$('#panel_create_account').fadeOut();
+				}
+			});
+			$('#email').on('keyup', function () {
+				if ($(this).val().length>5 && $(this).val().indexOf('@')>0) {
+					//alert('/DrexCartCarts/checkEmail/'+encodeURI($(this).val()));
+					$.ajax('/DrexCartCheckout/checkEmail/'+encodeURI($(this).val()), {
+							success: function (data) {
+								$('#checkout_email_check').html(data);
+								//alert(data);
+								
+							}});
+							
+				}
+			});
+			<?php 
+		}
+		?>
 
 		$('#copy_address').on('change', function () {
 			if ($(this).is(':checked')) {
@@ -187,17 +404,45 @@
 			}
 		});
 
-		$('#email').on('keyup', function () {
-			if ($(this).val().length>5 && $(this).val().indexOf('@')>0) {
-				//alert('/DrexCartCarts/checkEmail/'+encodeURI($(this).val()));
-				$.ajax('/DrexCartCheckout/checkEmail/'+encodeURI($(this).val()), {
-						success: function (data) {
-							$('#checkout_email_check').html(data);
-							//alert(data);
-							
-						}});
-						
+		
+
+
+		$('#billing_address').each(function () { $(this).on('change', function () {
+			//alert($(this).val());
+			if ($(this).val()=='new') {
+				$('#panel_new_billing').fadeIn();
+			} else {
+				$('#panel_new_billing').fadeOut();
 			}
-		});
+		})});
+
+		<?php 
+		if (isset($defaultBillingAddress) && $defaultBillingAddress) {
+			// hide the new billing panel
+			?>
+			$('#panel_new_billing').hide();
+			<?php
+		}
+		?>
+
+		$('#shipping_address').each(function () { $(this).on('change', function () {
+			//alert($(this).val());
+			if ($(this).val()=='new') {
+				$('#panel_new_shipping').fadeIn();
+			} else {
+				$('#panel_new_shipping').fadeOut();
+			}
+		})});
+
+		<?php 
+		if (isset($defaultShippingAddress) && $defaultShippingAddress) {
+			// hide the new billing panel
+			?>
+			$('#panel_new_shipping').hide();
+			<?php
+		}
+		?>
+		
 	});
+
 </script>

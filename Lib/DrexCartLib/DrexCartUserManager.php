@@ -88,6 +88,12 @@ class DrexCartUserManager {
 	
 	}
 	
+	public function getAddresses() {
+		$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+		$this->DrexCartAddress->create();
+		return $this->DrexCartAddress->find('all', array('conditions'=>array('drex_cart_users_id'=>$this->getUserId())));
+	}
+	
 	public function getOrders() {
 		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
 		$this->DrexCartOrder->create();
