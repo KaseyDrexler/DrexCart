@@ -1,4 +1,4 @@
-use Joomla\Registry\Format\Php;
+
 <h1>Checkout</h1>
 
 <?php echo $this->Form->create('DrexCartOrder'); ?>
@@ -272,14 +272,6 @@ use Joomla\Registry\Format\Php;
 											<div class="col-md-6">
 												Zip<br />
 												<?php echo $this->Form->input('shipping_zip', array('id'=>'shipping_zip', 'maxchars'=>10, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Zip Code')); ?>
-											</div>
-										</div>
-										<div class="row" style="margin-top:10px;">
-											<div class="col-md-6 text-right">
-												Contact Phone Number
-											</div>
-											<div class="col-md-6">
-												<?php echo $this->Form->input('shipping_phone', array('id'=>'shipping_phone', 'maxchars'=>14, 'label'=>false, 'class'=>"form-control", 'placeholder'=>'Phone #')); ?>
 											</div>
 										</div>
 									</div>

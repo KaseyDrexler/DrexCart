@@ -1,5 +1,9 @@
 <h1>DrexCart v0.0.1</h1>
 
+@author: Kasey Drexler
+@website: drexdesign.com
+
+
 Initial project creation.
 
 **NOTE: This project is in the early stages of development. Development schedule is listed below the Installation instructions.

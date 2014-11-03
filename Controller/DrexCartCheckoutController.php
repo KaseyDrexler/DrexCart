@@ -36,7 +36,26 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			// Order validation
 			$this->DrexCartOrder->set($this->request->data);
-			if ($this->DrexCartOrder->validates()) {
+			if (isset($this->request->data['DrexCartOrder']['default_billing_id']) && is_numeric($this->request->data['DrexCartOrder']['default_billing_id'])) {
+				unset($this->DrexCartOrder->validate['billing_firstname']);
+				unset($this->DrexCartOrder->validate['billing_lastname']);
+				unset($this->DrexCartOrder->validate['billing_address1']);
+				unset($this->DrexCartOrder->validate['billing_address2']);
+				unset($this->DrexCartOrder->validate['billing_city']);
+				unset($this->DrexCartOrder->validate['billing_state']);
+				unset($this->DrexCartOrder->validate['billing_zip']);
+				unset($this->DrexCartOrder->validate['billing_phone']);
+			}
+			if (isset($this->request->data['DrexCartOrder']['default_shipping_id']) && is_numeric($this->request->data['DrexCartOrder']['default_shipping_id'])) {
+				unset($this->DrexCartOrder->validate['shipping_firstname']);
+				unset($this->DrexCartOrder->validate['shipping_lastname']);
+				unset($this->DrexCartOrder->validate['shipping_address1']);
+				unset($this->DrexCartOrder->validate['shipping_address2']);
+				unset($this->DrexCartOrder->validate['shipping_city']);
+				unset($this->DrexCartOrder->validate['shipping_state']);
+				unset($this->DrexCartOrder->validate['shipping_zip']);
+			}
+			if ($this->DrexCartOrder->validates() ) {
 				
 				$this->Session->write('DrexCartOrder', $this->request->data['DrexCartOrder']);
 			} else {
