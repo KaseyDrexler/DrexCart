@@ -72,4 +72,48 @@ class DrexCartUsersController extends DrexCartAppController {
 		$this->DrexCartAddress->create();
 		$this->set('addresses', $this->DrexCartAddress->getAddresses($this->userManager->getUserId()));
 	}
+	
+	public function addressesEdit($addressId=null) {
+		$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+		$this->DrexCartAddress->create();
+		if (!empty($this->request->data)) {
+			// form submitted
+			$this->Session->setFlash('Address saved!', 'default', array('class'=>'alert alert-success'));
+				
+			
+			if (is_numeric($addressId)) {
+				// update
+				$this->DrexCartAddress->id = $addressId;
+				if ($this->DrexCartAddress->save($this->request->data)) {
+					$this->set('saved', true);
+				}
+			} else {
+				// insert
+				$this->DrexCartAddress->id = null;
+				$this->request->data['DrexCartAddress']['drex_cart_users_id'] = $this->userManager->getUserId();
+				
+				if ($this->DrexCartAddress->save($this->request->data)) {
+					$this->set('saved', true);
+				}
+			}
+				
+		}
+		
+		if (is_numeric($addressId) && $addressId>0) {
+			$address = $this->DrexCartAddress->getAddressById($addressId);
+			$this->set('address', $address);
+			$this->request->data['DrexCartAddress'] = $address['DrexCartAddress'];
+		}
+	}
+	
+	public function addressesDelete($addressId=null) {
+		$this->DrexCartAddress = ClassRegistry::init('DrexCart.DrexCartAddress');
+		$this->DrexCartAddress->create();
+		$this->DrexCartAddress->deleteAll(array('id'=>(int)$addressId, 'drex_cart_users_id'=>(int)$this->userManager->getUserId()));
+		$this->redirect('/DrexCartUsers/addresses');
+	}
+	
+	public function paymentProfiles() {
+		
+	}
 }

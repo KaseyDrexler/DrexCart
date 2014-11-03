@@ -38,6 +38,26 @@ class DrexCartAdminController extends DrexCartAppController {
 		$this->set('user_counts', $this->DrexCartUser->getUsersCreatedCount());
 	}
 	
+	// panel used on index
+	public function productStats() {
+		
+		// total products
+		$this->set('all_products', $this->DrexCartProduct->find('count'));
+		
+		// products with quantity less than 5
+		$this->set('low_quantity', $this->DrexCartProduct->find('count', array('conditions'=>array('quantity<5', 'enabled'=>1, 'visible'=>1))));
+		
+		// active products
+		$this->set('active_products', $this->DrexCartProduct->find('count', array('conditions'=>array('quantity>0', 'enabled'=>1, 'visible'=>1))));
+		
+		
+		// disabled products
+		$this->set('disabled_products', $this->DrexCartProduct->find('count', array('conditions'=>array('enabled'=>0))));
+		
+		// not visible products
+		$this->set('hidden_products', $this->DrexCartProduct->find('count', array('conditions'=>array('visible'=>0))));
+	}
+	
 	public function products() {
 		$this->productsList();
 		$this->render('productsList');

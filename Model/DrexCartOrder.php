@@ -93,7 +93,10 @@ class DrexCartOrder extends DrexCartAppModel {
 	}
 	
 	public function getOrdersByUserId($user_id=null) {
-		return $this->find('all', array('conditions'=>array('DrexCartOrder.drex_cart_users_id'=>(int)$user_id),
+		return $this->find('all', array('fields'=>array('DrexCartOrder.*', 'DrexCartOrderTotal.*', 'DrexCartOrderStatus.*'),
+										'conditions'=>array('DrexCartOrder.drex_cart_users_id'=>(int)$user_id),
+										'joins'=>array(array('table'=>'drex_cart_order_totals', 'alias'=>'DrexCartOrderTotal', 'type'=>'left', 'conditions'=>array('DrexCartOrderTotal.code'=>'total', 'DrexCartOrderTotal.drex_cart_orders_id=DrexCartOrder.id')),
+													   array('table'=>'drex_cart_order_statuses', 'alias'=>'DrexCartOrderStatus', 'type'=>'left', 'conditions'=>array('DrexCartOrderStatus.id=DrexCartOrder.drex_cart_order_statuses_id'))),
 										'order'=>array('DrexCartOrder.created_date'=>'desc')));
 	}
 }

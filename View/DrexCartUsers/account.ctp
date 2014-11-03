@@ -65,6 +65,74 @@
 		</div>
 	</div>
 </div>
+
+<div class="row">
+
+	<div class="col-md-6">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<p class="panel-title">Payment Profiles <?php echo $this->Html->link('View All', '/DrexCartUsers/paymentProfiles/', array('class'=>'pull-right btn btn-link')); ?></p>
+			</div>
+			<div class="panel-body">
+				<?php 
+				$payment_profiles = $userManager->getPaymentProfiles();
+				?>
+				<table class="table table-condensed table-hover">
+					<tr>
+						<th><span style="font-size:10px;">Card</span></th>
+						<th><span style="font-size:10px;">Exp Date</span></th>
+					</tr>
+					<?php 
+					foreach($payment_profiles as $payment) {
+					?>
+					<tr>
+						<td><span style="font-size:10px;"><?php echo substr($payment['DrexCartGatewayProfile']['account_number'], strlen($payment['DrexCartGatewayProfile']['account_number'])-4); ?></span></td>
+						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($payment['DrexCartGatewayProfile']['expiration'])); ?></span></td>
+					</tr>
+					<?php 
+					}
+					?>
+				</table>
+				<?php echo $this->Html->link('<i class="fa fa-plus"></i> Add Card', '/DrexCartUsers/paymentProfiles/', array('escape'=>false, 'class'=>'btn btn-link pull-right')); ?>
+				<?php echo $this->Html->link('<i class="fa fa-cog"></i> Manage Profiles', '/DrexCartUsers/paymentProfiles/', array('escape'=>false, 'class'=>'btn btn-link pull-right')); ?>
+				
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<p class="panel-title">Order History <?php echo $this->Html->link('View All', '/DrexCartUsers/orders', array('class'=>'pull-right btn btn-link')); ?></p>
+			</div>
+			<div class="panel-body">
+				<?php 
+				$orders = $userManager->getOrders();
+				?>
+				<table class="table table-condensed table-hover">
+					<tr>
+						<th><span style="font-size:10px;">Order ID</span></th>
+						<th><span style="font-size:10px;">Order Date</span></th>
+						<th><span style="font-size:10px;">Status</span></th>
+						<th><span style="font-size:10px;">Order Total</span></th>
+						
+					</tr>
+					<?php 
+					foreach($orders as $order) {
+					?>
+					<tr>
+						<td><span style="font-size:10px;"><?php echo $order['DrexCartOrder']['id']; ?></span></td>
+						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($order['DrexCartOrder']['created_date'])); ?></span></td>
+						<td><span style="font-size:10px;"><?php echo $order['DrexCartOrderStatus']['status_name']; ?></span></td>
+						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($order['DrexCartOrderTotal']['amount'])); ?></span></td>
+					</tr>
+					<?php 
+					}
+					?>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
 <?php 
-pr($userManager->getPaymentProfiles());
+
 ?>

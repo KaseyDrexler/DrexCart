@@ -6,10 +6,13 @@ $this->Html->addCrumb('My Addresses');
 <h1>My Addresses</h1>
 
 
+<p class="text-right"><?php echo $this->Html->link('<i class="fa fa-plus"></i> Add Address', 'javascript:loadAddressDetails();', array('class'=>'btn btn-link', 'escape'=>false)); ?></p>
+
 <table class="table table-hover">
 	<tr>
 		<th>Name</th>
 		<th>Address</th>
+		<th></th>
 		<th></th>
 	</tr>
 	<?php 
@@ -31,9 +34,14 @@ $this->Html->addCrumb('My Addresses');
 					echo '<span class="label label-success">Default Shipping</span> ';
 				}
 			?></td>
+			<td>
+				<?php echo $this->Html->link('Edit', 'javascript:loadAddressDetails('.$address['DrexCartAddress']['id'].');', array('class'=>'btn btn-default btn-xs')); ?>
+				<?php echo $this->Html->link('Delete', '/DrexCartUsers/addressesDelete/'.$address['DrexCartAddress']['id'], array('class'=>'btn btn-danger btn-xs')); ?>
+			</td>
 		</tr>
 		<?php 
 		}
 	}
 	?>
 </table>
+<p class="text-right"><?php echo $this->Html->link('<i class="fa fa-plus"></i> Add Address', 'javascript:loadAddressDetails();', array('class'=>'btn btn-link', 'escape'=>false)); ?></p>

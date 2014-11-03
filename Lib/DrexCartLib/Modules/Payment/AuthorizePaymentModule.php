@@ -133,7 +133,7 @@ class AuthorizePaymentModule implements PaymentModuleBase {
 					'created_date'=>date('Y-m-d H:i:s'),
 					'account_number'=>'************'.substr($cardInfo['account_number'],12),
 					'expiration'=>$cardInfo['expiration'],
-					'code'=>$cardInfo['code'],
+					'code'=>'***',
 					'profile_id'=>$soap_response->CreateCustomerPaymentProfileResult->customerPaymentProfileId)));
 			return $soap_response->CreateCustomerPaymentProfileResult->customerPaymentProfileId;
 		} else {

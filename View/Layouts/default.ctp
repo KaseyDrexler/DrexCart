@@ -65,6 +65,15 @@
 				</td>
 				<td valign="top">
 					<div id="panel_content">
+						<?php 
+						if (sizeof($this->Html->getCrumbList())>0) {
+							?>
+							<div class="breadcrumb">
+								<?php echo $this->Html->getCrumbs(' <i class="fa fa-chevron-right"></i> '); ?>
+							</div>
+							<?php 
+						}
+						?>
 						<?php echo $this->Session->flash(); ?>
 					
 		
@@ -94,7 +103,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Order Details</h4>
+        <h4 class="modal-title" id="myModalLabel"></h4>
       </div>
       <div class="modal-body">
        	

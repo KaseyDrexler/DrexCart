@@ -1,4 +1,4 @@
-Admin
+<h1>Admin Dashboard</h1>
 
 <?php 
 if (sizeof($gateways)==0) {
@@ -47,9 +47,9 @@ if (sizeof($gateways)==0) {
 	<div class="col-md-6">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<p class="panel-title"></p>
+				<p class="panel-title">Product Stats</p>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" id="panel_product_stats">
 				
 			</div>
 		</div>
@@ -73,9 +73,20 @@ if (sizeof($gateways)==0) {
 <?php echo $this->Html->script('DrexCart.plugin/flot/jquery.flot.pie.js'); ?>
 <?php echo $this->Html->script('DrexCart.plugin/flot/jquery.flot.tooltip.js'); ?>
 
+
+
 <script type="text/javascript">
+
+
+
+
 $(document).ready(function () {
 
+
+	<?php echo $this->Js->request('/DrexCartAdmin/productStats/', array('buffer'=>false, 'async'=>false, 'update'=>'#panel_product_stats')); ?>
+	
+
+	
 	/* chart colors default */
 	var $chrt_border_color = "#efefef";
 	var $chrt_grid_color = "#DDD"
