@@ -35,6 +35,27 @@
 		</div>
 	</div>
 </div>
+<?php 
+if ($shipping_rate = $shipping->getSelectedRate()) {
+?>
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<div class="panel-title">Shipping Information</div>
+			</div>
+			<div class="panel-body">
+				<p><b><?php echo $shipping->getShippingMethodName(); ?></b>
+				<p><b><?php echo $shipping_rate['name']; ?></b> <b class="pull-right">$<?php echo number_format($shipping_rate['cost'],2); ?></b></p>
+				
+			</div>
+		</div>
+	</div>
+	
+</div>
+<?php 
+}
+?>
 <div class="row">
 	<div class="col-md-6">
 		<div class="panel panel-warning">

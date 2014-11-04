@@ -30,6 +30,16 @@ class DrexCartShoppingCart {
 		return $this->DrexCartCartProduct->getProducts($this->drexcart_id);
 	}
 	
+	public function hasShippableProducts() {
+		$products = $this->getProducts();
+		foreach($products as $product) {
+			if ($product['DrexCartProductType']['shippable']==1) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public function getCreatedDate() {
 		$this->DrexCartCart = ClassRegistry::init('DrexCart.DrexCartCart');
 		$this->DrexCartCart->create();

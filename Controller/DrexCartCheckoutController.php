@@ -1,4 +1,6 @@
 <?php
+App::uses('FlatRateModule', 'DrexCart.DrexCartLib/Modules/Shipping');
+
 
 class DrexCartCheckoutController extends DrexCartAppController {
 	
@@ -16,9 +18,22 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	
 	public function index() {
 		
+		// shipping prices
+		$shipping = new FlatRateModule($this->cart);
+		$this->set('shipping', $shipping);
+		
 		if (!empty($this->request->data)) {
 			
 			$unvalidated = array();
+			$shipping_met = true;
+			if ($this->cart->hasShippableProducts()) {
+				if (isset($this->request->data['DrexCartOrder']['shipping_option']) && strlen($this->request->data['DrexCartOrder']['shipping_option'])>1) {
+					// shipping met
+				} else {
+					// shipping not met
+					$shipping_met = false;
+				}
+			}
 			
 			// User validation
 			if ((isset($this->request->data['DrexCartOrder']['create_user']) && $this->request->data['DrexCartOrder']['create_user']==0) || $this->userManager->isLoggedIn()) {
@@ -101,8 +116,9 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			
 			
-			if ($unvalidated) {
+			if ($unvalidated || !$shipping_met) {
 				$this->set('unvalidated', $unvalidated);
+				$this->set('shipping_met', $shipping_met);
 			} else {
 				$this->redirect('/DrexCartCheckout/verify');
 			}
@@ -127,6 +143,10 @@ class DrexCartCheckoutController extends DrexCartAppController {
 	}
 	
 	public function verify () {
+		// shipping prices
+		$shipping = new FlatRateModule($this->cart);
+		$this->set('shipping', $shipping);
+		
 		if (!empty($this->request->data)) { 
 			
 			try {

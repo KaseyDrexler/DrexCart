@@ -26,8 +26,9 @@ class DrexCartCartProduct extends DrexCartAppModel {
 	}
 	public function getProducts($drexcart_id=null) {
 		return $this->find('all', array('conditions'=>array('drex_cart_carts_id'=>$drexcart_id),
-										'joins'=>array(array('table'=>'drex_cart_products', 'alias'=>'DrexCartProduct', 'type'=>'left', 'conditions'=>array('DrexCartCartProduct.drex_cart_products_id=DrexCartProduct.id'))),
-										'fields'=>array('DrexCartCartProduct.*', 'DrexCartProduct.*')));
+										'joins'=>array(array('table'=>'drex_cart_products', 'alias'=>'DrexCartProduct', 'type'=>'left', 'conditions'=>array('DrexCartCartProduct.drex_cart_products_id=DrexCartProduct.id')),
+													   array('table'=>'drex_cart_product_types', 'alias'=>'DrexCartProductType', 'type'=>'left', 'conditions'=>array('DrexCartProduct.product_types_id=DrexCartProductType.id'))),
+										'fields'=>array('DrexCartCartProduct.*', 'DrexCartProduct.*', 'DrexCartProductType.*')));
 	}
 	
 	/**

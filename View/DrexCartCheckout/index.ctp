@@ -1,6 +1,15 @@
 
 <h1>Checkout</h1>
 
+
+<?php 
+if (isset($shipping_met) && !$shipping_met) {
+?>
+	<div class="alert alert-danger"><p class="text-right"><a href="javascript:void(0);" onclick="$(this).closest('div').hide();">x</a><p>Please select a shipping option.</div>
+<?php 
+}
+?>
+
 <?php echo $this->Form->create('DrexCartOrder'); ?>
 <?php //pr($unvalidated); ?>
 <div class="row">
@@ -330,6 +339,44 @@
 		</div>
 	</div>
 </div>
+
+<!-- Shipping Area -->
+
+<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-warning">
+			<div class="panel-heading">
+				<p class="panel-title">Shipping Information</p>
+			</div>
+			<div class="panel-body" id="panel_shipping">
+				<table class="table table-condensed table-hover">
+				<tr>
+					<th></th>
+					<th>Shipping Option</th>
+					<th class="text-right">Cost</th>
+				</tr>
+				<?php 
+				$shipping_options = $shipping->getShippingOptions();
+				foreach($shipping_options as $option) {
+					?>
+					<tr>
+						<td><input type="radio" name="data[DrexCartOrder][shipping_option]" value="<?php echo $option['code']; ?>" /></td>
+						<td><?php echo $option['name']; ?></td>
+						<td class="text-right">$<?php echo number_format($option['cost'],2); ?></td>
+					</tr>
+					<?php
+				}
+				?>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4 text-right">
+		<?php //echo $this->Form->button('Verify Order', array('class'=>'btn btn-warning')); ?>
+	</div>
+</div>
+
+<!-- End of Shipping Area -->
 
 <!-- payment area -->
 
