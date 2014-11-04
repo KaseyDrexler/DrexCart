@@ -123,6 +123,7 @@ class DrexCartShoppingCart {
 					
 					$payment_ok = true;
 				} else {
+					// TODO remove customer if they need to be 
 					$this->DrexCartUser->deleteAll(array('id'=>$user_id));
 				}
 				
@@ -130,10 +131,17 @@ class DrexCartShoppingCart {
 				$user = $this->DrexCartUser->find('first', array('conditions'=>array('id'=>(int)$user_id)));
 				$user = $user['DrexCartUser'];
 				$was_logged_in = true;
+				if ($transaction = $this->createOrderPayment($user, $order)) {
+					$payment_ok = true;
+				}
 			} 
 			if ($payment_ok) {
 				// save addresses
-				if ($order['billing_address1']) {
+				if (isset($order['default_billing_id'])) {
+					$this->DrexCartAddress->id = $order['default_billing_id'];	
+					
+				} else if ($order['billing_address1']) {
+				
 					$billing_address = array('DrexCartAddress'=>array('firstname'     =>ucwords($order['billing_firstname']),
 																		  'lastname'      =>ucwords($order['billing_lastname']),
 																		  'address1'      =>ucwords($order['billing_address1']),
@@ -148,7 +156,9 @@ class DrexCartShoppingCart {
 					$this->DrexCartUser->updateAll(array('DrexCartUser.billing_address_id'=>$this->DrexCartAddress->id),
 												   array('DrexCartUser.id'=>$user_id));
 				}
-				if ($order['shipping_address1']) {
+				if (isset($order['default_shipping_id'])) {
+					
+				} else if ($order['shipping_address1']) {
 					if ($order['shipping_address1']==$order['billing_address1'] &&
 						$order['shipping_address2']==$order['billing_address2'] &&
 						$order['shipping_city']==$order['billing_city'] &&
@@ -182,7 +192,6 @@ class DrexCartShoppingCart {
 													array('DrexCartUser.id'=>$user_id));
 				}
 				
-				$order = CakeSession::read('DrexCartOrder');
 				$order['drex_cart_users_id'] = $user_id;
 				$order['created_date'] = date('Y-m-d H:i:s');
 				$order['drex_cart_order_statuses_id'] = 1;
@@ -333,5 +342,95 @@ class DrexCartShoppingCart {
 									 $validationMode));
 		*/
 		
+	}
+	public function createOrderPayment($user=null, $orderInfo=null) {
+	
+		// figure out what payment method was used
+		$paymentInfo = CakeSession::read('DrexCartGatewayProfile');
+		
+		if (isset($paymentInfo['id']) && is_numeric($paymentInfo['id'])) {
+			// already have a payment profile
+			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+			$this->DrexCartGatewayProfile->create();
+			$gwCard = $this->DrexCartGatewayProfile->find('first', array('fields'=>array('DrexCartGatewayProfile.*', 'DrexCartGatewayUser.*'),
+														  'joins'=>array(array('table'=>'drex_cart_gateway_users', 'alias'=>'DrexCartGatewayUser', 'type'=>'left', 'conditions'=>array('DrexCartGatewayUser.id=DrexCartGatewayProfile.drex_cart_gateway_users_id'))),
+														  'conditions'=>array('DrexCartGatewayProfile.id'=>$paymentInfo['id'], 'DrexCartGatewayUser.drex_cart_users_id'=>$user['id'])));
+			if ($gwCard) {
+				$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+				$this->DrexCartGateway->create();
+				$gateway = $this->DrexCartGateway->getGatewayById($gwCard['DrexCartGatewayUser']['drex_cart_gateways_id']);
+				if ($gateway) {
+					if ($gateway['DrexCartGateway']['type']=='authorize') {
+						// authorize.net for credit cards
+						$paymentModule = new AuthorizePaymentModule($gateway['DrexCartGateway']['id'], $gateway['DrexCartGateway']['wsdl_url'], $gateway['DrexCartGateway']['api_login'], $gateway['DrexCartGateway']['api_key']);
+					} else if ($gateway['DrexCartGateway']['type']=='paypal') {
+						// paypal
+					}
+				}
+				$transactionId = $paymentModule->authorizePayment($gwCard['DrexCartGatewayUser']['profile_id'], $gwCard['DrexCartGatewayProfile']['profile_id'], $this->getCartTotal());	
+				return $transactionId;
+			} else throw new Exception('Payment profile does not exist!');
+		} else {
+			// check for user gateway profile
+			$gatewayId = $paymentInfo['drex_cart_gateways_id'];
+			$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+			$this->DrexCartGateway->create();
+			$this->DrexCartGatewayUser = ClassRegistry::init('DrexCart.DrexCartGatewayUser');
+			$this->DrexCartGatewayUser->create();
+			
+			$gateway = $this->DrexCartGateway->getGatewayById($gatewayId);
+			if ($gateway) {
+				if ($gateway['DrexCartGateway']['type']=='authorize') {
+					// authorize.net for credit cards
+					$paymentModule = new AuthorizePaymentModule($gatewayId, $gateway['DrexCartGateway']['wsdl_url'], $gateway['DrexCartGateway']['api_login'], $gateway['DrexCartGateway']['api_key']);
+				} else if ($gateway['DrexCartGateway']['type']=='paypal') {
+					// paypal
+				}
+			}
+			
+			if ($gwUser = $this->DrexCartGatewayUser->find('first', array('conditions'=>array('drex_cart_users_id'=>$user['id'], 'drex_cart_gateways_id'=>$gatewayId)))) {
+				// gateway user account profile exists
+				$userProfileId = $gwUser['DrexCartGatewayUser']['profile_id'];
+			} else if ($userProfileId = $paymentModule->createCustomer($user)) {
+				//echo 'userProfileId: '.$userProfileId;
+			} else {
+				$errorMessage = '';
+				foreach ($paymentModule->errors as $error) {
+					$errorMessage .= $error.'<br />';
+				}
+				throw new Exception($errorMessage);
+			}
+			
+			
+			if ($userCardProfileId = $paymentModule->addCard($userProfileId, $paymentInfo, $orderInfo)) {
+				//echo '<br /> userCartProfileId: '.$userCardProfileId;
+			} else {
+				$errorMessage = '';
+				foreach ($paymentModule->errors as $error) {
+					$errorMessage .= $error.'<br />';
+				}
+				throw new Exception($errorMessage);
+			}
+			
+			
+			//exit;
+			
+			$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $this->getCartTotal());
+			
+			
+			return $transactionId;
+		}
+		
+		
+	
+		/*
+			$soap->CreateCustomerProfile(new CreateCustomerPaymentProfile(new MerchantAuthenticationType('9eFfhH98Uz', '38UAqh26T7U3gc4y'),
+					null,
+					new CustomerPaymentProfileType(new PaymentType($bankAccount, $creditCard),
+							$driversLicense,
+							$taxId),
+					$validationMode));
+		*/
+	
 	}
 }

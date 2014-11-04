@@ -89,3 +89,7 @@ body {
 	transition:all .5s linear;
 	background-color: #eeeeee;
 }
+
+table.table-hover tr td:hover {
+	cursor:pointer;
+}

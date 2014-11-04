@@ -23,4 +23,10 @@ class DrexCartGatewayProfile extends DrexCartAppModel {
 										'joins'=>array(array('table'=>'drex_cart_gateway_users', 'alias'=>'DrexCartGatewayUser', 'type'=>'left', 'conditions'=>array('DrexCartGatewayUser.id=DrexCartGatewayProfile.drex_cart_gateway_users_id'))),
 										'conditions'=>array('DrexCartGatewayUser.drex_cart_users_id'=>(int)$user_id)));
 	}
+	
+	public function getPaymentProfile($user_id=null, $profile_id=null) {
+		return $this->find('first', array('fields'=>array('DrexCartGatewayProfile.*', 'DrexCartGatewayUser.*'),
+				'joins'=>array(array('table'=>'drex_cart_gateway_users', 'alias'=>'DrexCartGatewayUser', 'type'=>'left', 'conditions'=>array('DrexCartGatewayUser.id=DrexCartGatewayProfile.drex_cart_gateway_users_id'))),
+				'conditions'=>array('DrexCartGatewayProfile.id'=>(int)$profile_id, 'DrexCartGatewayUser.drex_cart_users_id'=>(int)$user_id)));
+	}
 }

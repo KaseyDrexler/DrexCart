@@ -115,5 +115,14 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+	$('.table-hover tr').click(function() {
+	    $(this).find('td input:radio').prop('checked', true);
+	})
+});
+</script>
 </body>
 </html>
