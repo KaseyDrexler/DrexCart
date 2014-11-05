@@ -35,6 +35,49 @@
 		</div>
 	</div>
 </div>
+<div class="row">
+	<div class="col-md-8">
+		<h3>Products</h3>
+		<table class="table table-hover table-condensed">
+			<tr>
+				<th>Product</th>
+				<th class="text-center">Quantity</th>
+				<th class="text-right">Total</th>
+			</tr>
+			<?php 
+			$products = $cart->getProducts();
+			foreach($products as $product) {
+			?>
+			<tr>
+				<td><?php echo $product['DrexCartProduct']['name']; ?></td>
+				<td class="text-center"><?php echo $product['DrexCartCartProduct']['quantity']; ?></td>
+				<td class="text-right">$<?php echo number_format($product['DrexCartCartProduct']['quantity'] * $product['DrexCartCartProduct']['rate'],2); ?></td>
+			</tr>
+			<?php 
+			}
+			?>
+			<tr>
+				<td colspan="4" style="border-top: 1px solid #cccccc;border-bottom:1px solid #cccccc;height:0px;"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">SubTotal:</td>
+				<td class="text-right">$<?php echo number_format($cart->getCartTotal(),2); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">Taxes:</td>
+				<td class="text-right">$<?php echo number_format($cart->getTaxesTotal(),2); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right">Shipping:</td>
+				<td class="text-right">$<?php echo number_format($cart->getShippingTotal(),2); ?></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="right" style="font-weight:bold;color:#990000;">Total:</td>
+				<td class="text-right" style="font-weight:bold;color:#990000;">$<?php echo number_format($cart->getCheckoutTotal(),2); ?></td>
+			</tr>
+		</table>
+	</div>
+</div>
 <?php 
 if ($shipping_rate = $shipping->getSelectedRate()) {
 ?>

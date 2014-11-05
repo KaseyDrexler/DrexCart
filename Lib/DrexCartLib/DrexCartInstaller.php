@@ -413,6 +413,7 @@ CREATE TABLE IF NOT EXISTS `drex_cart_order_totals` (
   `drex_cart_orders_id` INT NOT NULL,
   `code` VARCHAR(45) NOT NULL,
   `amount` DECIMAL(10,5) NOT NULL,
+  `name` VARCHAR(45) NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_drex_cart_order_totals_drex_cart_orders1_idx` (`drex_cart_orders_id` ASC),
   CONSTRAINT `fk_drex_cart_order_totals_drex_cart_orders1`
@@ -454,6 +455,7 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+					
 					
 					
 					

@@ -13,7 +13,7 @@
 	<?php 
 	foreach($orders as $order) {
 	?>
-		<tr>
+		<tr onclick="document.location.href='/DrexCartAdmin/orderDetails/<?php echo $order['DrexCartOrder']['id']; ?>';">
 			<td><?php echo $order['DrexCartOrder']['id']; ?></td>
 			<td><?php echo date('m/d/Y h:i a', strtotime($order['DrexCartOrder']['created_date'])); ?></td>
 			<td><?php echo $order['DrexCartUser']['firstname'] . ' ' . $order['DrexCartUser']['lastname']; ?></td>

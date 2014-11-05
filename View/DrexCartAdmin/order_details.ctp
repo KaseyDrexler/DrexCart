@@ -1,9 +1,9 @@
 <?php 
-$this->Html->addCrumb('My Account', '/DrexCartUsers/account');
-$this->Html->addCrumb('My Orders', '/DrexCartUsers/orders');
+$this->Html->addCrumb('Admin Home', '/DrexCartAdmin/index');
+$this->Html->addCrumb('Orders', '/DrexCartAdmin/orders');
 $this->Html->addCrumb('Order Details');
-
 ?>
+
 <h1>Order #<?php echo $order['DrexCartOrder']['id']; ?></h1>
 
 <div class="row">

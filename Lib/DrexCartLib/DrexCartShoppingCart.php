@@ -230,8 +230,16 @@ class DrexCartShoppingCart {
 																				  'amount'=>$order_amount)));
 				$this->DrexCartOrderTotal->id = null;
 				$this->DrexCartOrderTotal->save(array('DrexCartOrderTotal'=>array('drex_cart_orders_id'=>$order_id,
+						'code'=>'tax',
+						'amount'=>$this->getTaxesTotal())));
+				$this->DrexCartOrderTotal->id = null;
+				$this->DrexCartOrderTotal->save(array('DrexCartOrderTotal'=>array('drex_cart_orders_id'=>$order_id,
+						'code'=>'shipping',
+						'amount'=>$this->getShippingTotal())));
+				$this->DrexCartOrderTotal->id = null;
+				$this->DrexCartOrderTotal->save(array('DrexCartOrderTotal'=>array('drex_cart_orders_id'=>$order_id,
 																				  'code'=>'total',
-																				  'amount'=>$order_amount)));
+																				  'amount'=>$this->getCheckoutTotal())));
 				
 				// make history entry
 				$this->DrexCartOrderStatusHistory = ClassRegistry::init('DrexCart.DrexCartOrderStatusHistory');
@@ -338,7 +346,7 @@ class DrexCartShoppingCart {
 		
 		//exit;
 
-		$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $this->getCartTotal());
+		$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $this->getCheckoutTotal());
 		
 		
 		return $transactionId;
@@ -355,6 +363,8 @@ class DrexCartShoppingCart {
 	}
 	public function createOrderPayment($user=null, $orderInfo=null) {
 	
+		$total = $this->getCheckoutTotal();
+		
 		// figure out what payment method was used
 		$paymentInfo = CakeSession::read('DrexCartGatewayProfile');
 		
@@ -377,7 +387,7 @@ class DrexCartShoppingCart {
 						// paypal
 					}
 				}
-				$transactionId = $paymentModule->authorizePayment($gwCard['DrexCartGatewayUser']['profile_id'], $gwCard['DrexCartGatewayProfile']['profile_id'], $this->getCartTotal());	
+				$transactionId = $paymentModule->authorizePayment($gwCard['DrexCartGatewayUser']['profile_id'], $gwCard['DrexCartGatewayProfile']['profile_id'], $total);	
 				return $transactionId;
 			} else throw new Exception('Payment profile does not exist!');
 		} else {
@@ -425,7 +435,7 @@ class DrexCartShoppingCart {
 			
 			//exit;
 			
-			$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $this->getCartTotal());
+			$transactionId = $paymentModule->authorizePayment($userProfileId, $userCardProfileId, $total);
 			
 			
 			return $transactionId;
@@ -442,5 +452,42 @@ class DrexCartShoppingCart {
 					$validationMode));
 		*/
 	
+	}
+	
+	public function getCheckoutTotal() {
+		$total = $this->getCartTotal();
+		
+		$shipping_cost = $this->getShippingTotal(); 
+		$tax_cost = $this->getTaxesTotal();
+		
+		return $total + $tax_cost + $shipping_cost;
+	}
+	
+	public function getTaxesTotal() {
+		$tax_amount = 0;
+		$tax_rate = .07;
+		$products = $this->getProducts();
+		foreach($products as $product) {
+			$tax_amount += $product['DrexCartCartProduct']['rate'] * $product['DrexCartCartProduct']['quantity'] * $tax_rate;
+		}
+		return $tax_amount;
+	}
+	
+	public function getShippingTotal() {
+		$shipping_amount = 0;
+		if ($this->hasShippableProducts()) {
+			if (CakeSession::check('DrexCartOrder')) {
+				$order = CakeSession::read('DrexCartOrder');
+				if (isset($order['shipping_option'])) {
+					//echo $order['shipping_option'];
+					$option_parts = preg_split('/\_/', $order['shipping_option']);
+					eval('$shipping = new '.$option_parts[0].'($this);');
+					return $shipping->getShippingCosts($order['shipping_option']);
+				} else {
+					// problem
+				}
+			}
+		}
+		return $shipping_amount;
 	}
 }

@@ -34,6 +34,7 @@
 		echo $this->Html->css('DrexCart.main');
 		
 		echo $this->Html->script('DrexCart.bootstrap.min');
+		echo $this->Html->script('DrexCart.drexcart');
 		
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
@@ -63,6 +64,15 @@
 				</td>
 				<td valign="top">
 					<div id="panel_content">
+						<?php 
+						if (sizeof($this->Html->getCrumbList())>0) {
+							?>
+							<div class="breadcrumb">
+								<?php echo $this->Html->getCrumbs(' <i class="fa fa-chevron-right"></i> '); ?>
+							</div>
+							<?php 
+						}
+						?>
 						<?php echo $this->Session->flash(); ?>
 					
 		
