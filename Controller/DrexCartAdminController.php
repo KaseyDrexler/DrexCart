@@ -233,4 +233,15 @@ class DrexCartAdminController extends DrexCartAppController {
 		}
 	}
 	
+	public function orderPayments($orderId=null) {
+		$this->DrexCartOrderPayment = ClassRegistry::init('DrexCart.DrexCartOrderPayment');
+		$this->DrexCartOrderPayment->create();
+		$this->set('order_payments', $this->DrexCartOrderPayment->getPaymentsOnOrder($orderId));
+		
+		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
+		$this->DrexCartOrder->create();
+		$this->set('order', $this->DrexCartOrder->getOrder($orderId));
+		
+		
+	}
 }

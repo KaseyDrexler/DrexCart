@@ -202,4 +202,13 @@ $this->Html->addCrumb('Order Details');
 	</div>
 </div>
 
+<script type="text/javascript">
+					
+<!--
+$(document).ready(function () {
+	<?php echo $this->Js->request('/DrexCartAdmin/orderPayments/'.$order['DrexCartOrder']['id'], array('update'=>'#panel_right', 'buffer'=>false)); ?>
+});
+//-->
+</script>
+
 <?php //pr($order); ?>
