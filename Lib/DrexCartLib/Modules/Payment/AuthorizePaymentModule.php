@@ -13,6 +13,7 @@ App::uses('MerchantAuthenticationType', 'DrexCart.DrexCartLib/PaymentGateways/Au
 App::uses('ProfileTransAuthOnlyType', 'DrexCart.DrexCartLib/Modules/Payment');
 App::uses('ProfileTransactionType', 'DrexCart.DrexCartLib/Modules/Payment');
 App::uses('CreateCustomerProfileTransaction', 'DrexCart.DrexCartLib/Modules/Payment');
+App::uses('ProfileTransPriorAuthCaptureType', 'DrexCart.DrexCartLib/Modules/Payment');
 
 
 App::uses('DriversLicenseType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
@@ -189,8 +190,39 @@ class AuthorizePaymentModule implements PaymentModuleBase {
 	public function voidPayment($customerInformation, $profileInformation, $transactionId) {
 		
 	}
-	public function capturePayment($customerInformation, $profileInformation, $amount) {
+	public function capturePayment($customerInformation, $profileInformation, $amount, $transactionId) {
+		$soap = new ServiceCustom((Configure::read('debug')>0) ? array('trace'=>1) : array(''), $this->wsdl_url);
 		
+		$auth = new ProfileTransPriorAuthCaptureType($customerInformation, $profileInformation, null, $transactionId);
+		$auth->amount = $amount;
+
+		
+		$transaction = new ProfileTransactionType(null,
+				null,
+				null,
+				null,
+				null,
+				$auth);
+		
+		
+		$parameters = new CreateCustomerProfileTransaction(new MerchantAuthenticationType($this->login, $this->key), $transaction, null);
+		//pr($parameters);
+		//echo '<hr />';
+		$soap_result = $soap->CreateCustomerProfileTransaction($parameters);
+		//pr($soap->__getLastRequest());
+		//pr($soap_result);
+		
+		if ($soap_result->CreateCustomerProfileTransactionResult->resultCode=='Ok') {
+			$directResponse = $soap_result->CreateCustomerProfileTransactionResult->directResponse;
+			$directResponse = preg_split('/\,/', $directResponse);
+			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+			$this->DrexCartGatewayProfile->create();
+			$profile = $this->DrexCartGatewayProfile->find('first', array('conditions'=>array('profile_id'=>$profileInformation)));
+			$profile['DrexCartGatewayProfile']['transaction_id'] = $directResponse[6];
+			return $profile['DrexCartGatewayProfile'];
+		} else {
+			return false;
+		}
 	}
 	public function refundPayment($customerInformation, $profileInformation, $amount) {
 		

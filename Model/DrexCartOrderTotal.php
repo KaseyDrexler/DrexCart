@@ -12,4 +12,8 @@ class DrexCartOrderTotal extends DrexCartAppModel {
 										'conditions'=>array('DrexCartOrder.created_date>\''.date('Y-m-d 00:00:00', time()-86400*7).'\''),
 										'joins'=>array(array('table'=>'drex_cart_orders', 'alias'=>'DrexCartOrder', 'type'=>'left', 'conditions'=>array('DrexCartOrder.id=DrexCartOrderTotal.drex_cart_orders_id')))));
 	}
+	
+	
+	
+	
 }

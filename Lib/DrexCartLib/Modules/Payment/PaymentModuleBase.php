@@ -13,6 +13,6 @@ interface PaymentModuleBase {
 
 	public function authorizePayment($customerInformation, $profileInformation, $amount);
 	public function voidPayment($customerInformation, $profileInformation, $transactionId);
-	public function capturePayment($customerInformation, $profileInformation, $amount);
+	public function capturePayment($customerInformation, $profileInformation, $amount, $transactionId);
 	public function refundPayment($customerInformation, $profileInformation, $amount);
 }

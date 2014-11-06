@@ -1,5 +1,6 @@
 <?php
 
+App::uses('AuthorizePaymentModule', 'DrexCart.DrexCartLib/Modules/Payment');
 
 class DrexCartAdminController extends DrexCartAppController {
 	var $uses = array('DrexCart.DrexCartProduct', 'DrexCart.DrexCartProductType', 'DrexCart.DrexCartUser', 'DrexCart.DrexCartOrder', 'DrexCart.DrexCartOrderTotal');
@@ -243,5 +244,64 @@ class DrexCartAdminController extends DrexCartAppController {
 		$this->set('order', $this->DrexCartOrder->getOrder($orderId));
 		
 		
+	}
+	
+	public function orderPaymentsCapture($orderPaymentsId=null) {
+		$this->DrexCartOrderPayment = ClassRegistry::init('DrexCart.DrexCartOrderPayment');
+		$this->DrexCartOrderPayment->create();
+		$order_payment = $this->DrexCartOrderPayment->getPaymentsById($orderPaymentsId);
+		$this->set('order_payment', $order_payment);
+		
+		// precaution
+		if ($order_payment['DrexCartOrderPayment']['amount']==$order_payment['DrexCartOrderPayment']['captured_amount']) {
+			// all captured, nothing to do here
+			//$this->redirect('/DrexCartAdmin/orderPayments/'.$order_payment['DrexCartOrderPayment']['drex_cart_orders_id']);
+			exit;
+		}
+		
+		
+		//pr($order_payment);
+		if (!empty($this->request->data)) {
+			
+			// check amount
+			$amount = $this->request->data['DrexCartOrderPayment']['capture_amount'];
+			
+			// get gateway information
+			$this->DrexCartOrderPayment = ClassRegistry::init('DrexCart.DrexCartOrderPayment');
+			$this->DrexCartOrderPayment->create();
+			$gateway = $this->DrexCartOrderPayment->getGatewayInfo($order_payment['DrexCartOrderPayment']['id']);
+			if ($gateway['type']=='authorize') {
+				$payment = new AuthorizePaymentModule($gateway['id'], $gateway['wsdl_url'], $gateway['api_login'], $gateway['api_key']);
+			} else {
+				// TODO other payment methods
+			}
+			
+			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+			$this->DrexCartGatewayProfile->create();
+			$this->DrexCartGatewayUser = ClassRegistry::init('DrexCart.DrexCartGatewayUser');
+			$this->DrexCartGatewayUser->create();
+			$profile = $this->DrexCartGatewayProfile->find('first', array('conditions'=>array('id'=>$order_payment['DrexCartOrderPayment']['drex_cart_gateway_profiles_id'])));
+			
+			$userProfile = $this->DrexCartGatewayUser->find('first', array('conditions'=>array('id'=>$profile['DrexCartGatewayProfile']['drex_cart_gateway_users_id'])));
+			
+			if ($tranasactionId = $payment->capturePayment($userProfile['DrexCartGatewayUser']['profile_id'], $profile['DrexCartGatewayProfile']['profile_id'], $amount, $order_payment['DrexCartOrderPayment']['transaction_id'])) {
+				// capture was good
+				$order_payment['DrexCartOrderPayment']['captured_amount'] = $amount;
+				$order_payment['DrexCartOrderPayment']['captured_date'] = date('Y-m-d H:i:s');
+				$this->DrexCartOrderPayment->id = $order_payment['DrexCartOrderPayment']['id'];
+				$this->DrexCartOrderPayment->save($order_payment);
+				$this->set('captured', true);
+			} else {
+				// capture was bad
+				$this->set('captured', false);
+			}
+		}
+		
+		
+		$this->set('order', $this->DrexCartOrder->getOrder($order_payment['DrexCartOrderPayment']['drex_cart_orders_id']));
+		
+		$this->DrexCartOrderTotal = ClassRegistry::init('DrexCart.DrexCartOrderTotal');
+		$this->DrexCartOrderTotal->create();
+		$this->set('order_totals', $this->DrexCartOrderTotal->getOrderTotals($order_payment['DrexCartOrderPayment']['drex_cart_orders_id']));
 	}
 }

@@ -217,7 +217,7 @@ class DrexCartShoppingCart {
 				$this->DrexCartOrderPayment->save(array('DrexCartOrderPayment'=>array('drex_cart_orders_id'=>$order_id,
 						'drex_cart_gateway_profiles_id'=>$transaction['id'],
 						'created_date'=>date('Y-m-d H:i:s'),
-						'amount'=>$this->getCartTotal(),
+						'amount'=>$this->getCheckoutTotal(),
 						'transaction_id'=>$transaction['transaction_id'])));
 				
 				// order totals

@@ -35,6 +35,7 @@
 		
 		echo $this->Html->script('DrexCart.bootstrap.min');
 		echo $this->Html->script('DrexCart.drexcart');
+		echo $this->Html->script('DrexCart.kaseydrexler');
 		
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
