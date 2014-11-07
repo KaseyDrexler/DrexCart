@@ -207,8 +207,7 @@ class DrexCartAdminController extends DrexCartAppController {
 	}
 	
 	public function orderDetails($orderId=null) {
-		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
-		$this->DrexCartOrder->create();
+		
 		$order = $this->DrexCartOrder->getOrder((int)$orderId);
 		
 		$this->set('order', $order);
@@ -231,7 +230,33 @@ class DrexCartAdminController extends DrexCartAppController {
 			$this->DrexCartOrderPayment = ClassRegistry::init('DrexCart.DrexCartOrderPayment');
 			$this->DrexCartOrderPayment->create();
 			$this->set('order_payments', $this->DrexCartOrderPayment->getPaymentsOnOrder($order['DrexCartOrder']['id']));
+			
+			
 		}
+	}
+	
+	public function orderStatusUpdate($orderId=null) {
+		if (!empty($this->request->data)) {
+			$this->DrexCartOrderStatusHistory = ClassRegistry::init('DrexCart.DrexCartOrderStatusHistory');
+			$this->DrexCartOrderStatusHistory->create();
+			$this->DrexCartOrderStatusHistory->id = null;
+			$this->DrexCartOrderStatusHistory->save(array('DrexCartOrderStatusHistory'=>array('status_date'=>date('Y-m-d H:i:s'),
+																							  'note'=>$this->request->data['DrexCartOrderStatusHistory']['note'],
+																							  'drex_cart_order_statuses_id'=>$this->request->data['DrexCartOrderStatusHistory']['drex_cart_order_statuses_id'],
+																							  'drex_cart_orders_id'=>(int)$orderId)));
+			$this->DrexCartOrder->updateAll(array('DrexCartOrder.drex_cart_order_statuses_id'=>$this->request->data['DrexCartOrderStatusHistory']['drex_cart_order_statuses_id']),
+											array('DrexCartOrder.id'=>(int)$orderId));
+			$this->set('updated', true);
+		}
+		$this->DrexCartOrderStatus = ClassRegistry::init('DrexCart.DrexCartOrderStatus');
+		$this->DrexCartOrderStatus->create();
+		$this->set('available_statuses', $this->DrexCartOrderStatus->getAllStatusesForSelect());
+		
+		
+
+		$order = $this->DrexCartOrder->getOrder((int)$orderId);
+		
+		$this->set('order', $order);
 	}
 	
 	public function orderPayments($orderId=null) {
@@ -303,5 +328,9 @@ class DrexCartAdminController extends DrexCartAppController {
 		$this->DrexCartOrderTotal = ClassRegistry::init('DrexCart.DrexCartOrderTotal');
 		$this->DrexCartOrderTotal->create();
 		$this->set('order_totals', $this->DrexCartOrderTotal->getOrderTotals($order_payment['DrexCartOrderPayment']['drex_cart_orders_id']));
+	}
+	
+	public function orderStatuses() {
+		
 	}
 }

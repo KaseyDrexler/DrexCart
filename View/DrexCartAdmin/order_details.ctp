@@ -174,9 +174,15 @@ $this->Html->addCrumb('Order Details');
 	<div class="col-md-6">
 		<div class="panel panel-info">
 			<div class="panel-heading">
-				<h1 class="panel-title">Status History</h1>
+				<h1 class="panel-title">Status History <?php echo $this->Js->link('Change Status', 
+																				  '/DrexCartAdmin/orderStatusUpdate/'.$order['DrexCartOrder']['id'],
+																				  array('class'=>'btn btn-xs btn-warning pull-right',
+																				  		'buffer'=>false,
+																						'complete'=>'$(\'.modal\').modal(\'show\');$(\'.modal-title\').html(\'Order Status Update\');',
+																						'update'=>'.modal-body')); ?></h1>
 			</div>
 			<div class="panel-body">
+				
 				<table class="table table-condensed table-hover">
 					<tr>
 						<th><span style="font-size:10px;">Status</span></th>

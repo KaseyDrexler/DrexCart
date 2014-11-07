@@ -11,6 +11,7 @@ if (isset($installed)) {
 	<li><?php echo $this->Html->link('Products', '/DrexCartAdmin/products'); ?></li>
 	<li><?php echo $this->Html->link('Customers', '/DrexCartAdmin/customers'); ?></li>
 	<li><?php echo $this->Html->link('Orders', '/DrexCartAdmin/orders'); ?></li>
+	<li><?php echo $this->Html->link('Order Statuses', '/DrexCartAdmin/orderStatuses'); ?></li>
 	<li><?php echo $this->Html->link('Payment Gateways', '/DrexCartAdmin/gateways'); ?></li>
 	
 	

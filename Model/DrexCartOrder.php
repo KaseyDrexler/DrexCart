@@ -67,6 +67,10 @@ class DrexCartOrder extends DrexCartAppModel {
 			'DrexCartUser' => array(
 					'className' => 'DrexCart.DrexCartUser',
 					'foreignKey' => 'drex_cart_users_id'
+			),
+			'DrexCartOrderStatus' => array(
+					'className' => 'DrexCart.DrexCartOrderStatus',
+					'foreignKey' => 'drex_cart_order_statuses_id'
 			)
 	);
 	
