@@ -96,9 +96,9 @@ class DrexCartCheckoutController extends DrexCartAppController {
 				$this->Session->write('DrexCartOrder', $this->request->data['DrexCartOrder']);
 			} else {
 				
-				$unvalidated = array_merge($this->DrexCartUser->validationErrors);
-				echo 'error:<b>Unvalidated!</b>';
-				pr($unvalidated);
+				$unvalidated = array_merge($unvalidated, $this->DrexCartOrder->validationErrors);
+			
+				//exit;
 			}
 			
 			// Payment validation
@@ -116,8 +116,10 @@ class DrexCartCheckoutController extends DrexCartAppController {
 			
 			
 			
-			if ($unvalidated || !$shipping_met) {
+			if ($unvalidated ) {
 				$this->set('unvalidated', $unvalidated);
+				$this->set('shipping_met', $shipping_met);
+			} else if (!$shipping_met) {
 				$this->set('shipping_met', $shipping_met);
 			} else {
 				$this->redirect('/DrexCartCheckout/verify');

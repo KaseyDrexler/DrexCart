@@ -3,7 +3,7 @@
 <?php $order = $this->Session->read('DrexCartOrder'); ?>
 <?php $user = $this->Session->read('DrexCartUser'); ?>
 <?php $payment = $this->Session->read('DrexCartGatewayProfile'); ?>
-
+<?php //pr($this->Session->read('DrexCartOrder')); ?>
 
 <div class="row">
 	<div class="col-md-6">

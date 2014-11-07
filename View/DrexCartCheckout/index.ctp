@@ -418,7 +418,7 @@ if (isset($shipping_met) && !$shipping_met) {
 
 
 
-			$('#billing_address').each(function () { $(this).on('change', function () {
+			$('#billing_address').each(function () { $(this).on('click', function () {
 				//alert($(this).val());
 				if ($(this).val()=='new') {
 					$('#panel_new_billing').fadeIn();
@@ -436,7 +436,7 @@ if (isset($shipping_met) && !$shipping_met) {
 			}
 			?>
 
-			$('#shipping_address').each(function () { $(this).on('change', function () {
+			$('#shipping_address').each(function () { $(this).on('click', function () {
 				//alert($(this).val());
 				if ($(this).val()=='new') {
 					$('#panel_new_shipping').fadeIn();
