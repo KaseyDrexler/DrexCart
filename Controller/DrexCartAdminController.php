@@ -331,6 +331,25 @@ class DrexCartAdminController extends DrexCartAppController {
 	}
 	
 	public function orderStatuses() {
+		$this->DrexCartOrderStatus = ClassRegistry::init('DrexCart.DrexCartOrderStatus');
+		$this->DrexCartOrderStatus->create();
+		$this->set('order_statuses', $this->DrexCartOrderStatus->find('all'));
+	}
+	
+	public function orderStatusesEdit($orderStatusesId=null) {
+		$this->set('orderStatusesId', $orderStatusesId);
+		$this->DrexCartOrderStatus = ClassRegistry::init('DrexCart.DrexCartOrderStatus');
+		$this->DrexCartOrderStatus->create();
+		$order_status = $this->DrexCartOrderStatus->getOrderStatusById($orderStatusesId);
+		$this->set('order_status', $order_status);
 		
+		if (!empty($this->request->data)) {
+			//$this->DrexCartOrderStatus->set($this->request->data);
+			$this->DrexCartOrderStatus->save($this->request->data);
+			$this->set('updated', true);
+		} else if ($order_status) {
+		
+			$this->request->data['DrexCartOrderStatus'] = $order_status['DrexCartOrderStatus'];
+		}
 	}
 }

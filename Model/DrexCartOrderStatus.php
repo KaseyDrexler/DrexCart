@@ -22,4 +22,8 @@ class DrexCartOrderStatus extends DrexCartAppModel {
 		}
 		return $new_statuses;
 	}
+	
+	public function getOrderStatusById($orderStatusesId=null) {
+		return $this->find('first', array('conditions'=>array('DrexCartOrderStatus.id'=>(int)$orderStatusesId)));
+	}
 }
