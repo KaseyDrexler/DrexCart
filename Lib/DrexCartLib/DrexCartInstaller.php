@@ -152,9 +152,10 @@ ENGINE = InnoDB;
 -- Table `drex_cart_categories`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `drex_cart_categories` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
   `parent_categories_id` INT NULL,
+  `order` INT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_categories_categories1_idx` (`parent_categories_id` ASC),
   CONSTRAINT `fk_categories_categories1`
@@ -172,6 +173,7 @@ CREATE TABLE IF NOT EXISTS `drex_cart_products_to_categories` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `categories_id` INT NOT NULL,
   `products_id` INT NOT NULL,
+  `order` INT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_products_to_categories_categories1_idx` (`categories_id` ASC),
   INDEX `fk_products_to_categories_products1_idx` (`products_id` ASC),

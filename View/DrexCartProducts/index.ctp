@@ -6,7 +6,7 @@ foreach($products as $product) {
 	<div class="col-xs-6 col-sm-4 col-md-4">
 		<div class="product-thumbnail">
 			<?php 
-			if (file_exists('drexcart/'.$product['DrexCartProduct']['main_image'])) {
+			if (file_exists(getcwd().'\img\drexcart\\'.$product['DrexCartProduct']['main_image']) && strlen($product['DrexCartProduct']['main_image'])>0) {
 				echo $this->Html->image('drexcart/'.$product['DrexCartProduct']['main_image'], array('alt'=>$product['DrexCartProduct']['name'], 'height'=>'*', 'width'=>'200')); 
 			} else {
 				echo $this->Html->image('/drex_cart/img/noimage.png');

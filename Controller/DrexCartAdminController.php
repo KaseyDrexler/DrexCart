@@ -352,4 +352,22 @@ class DrexCartAdminController extends DrexCartAppController {
 			$this->request->data['DrexCartOrderStatus'] = $order_status['DrexCartOrderStatus'];
 		}
 	}
+	
+	/* product category functions */
+	
+	public function categories($parentNodeId=0) {
+		$this->DrexCartCategory = ClassRegistry::init('DrexCart.DrexCartCategory');
+		$this->DrexCartCategory->create();
+		
+		$this->DrexCartProductsToCategory = ClassRegistry::init('DrexCart.DrexCartProductsToCategory');
+		$this->DrexCartProductsToCategory->create();
+		
+		$categories = $this->DrexCartCategory->getCategoriesByNodeId($parentNodeId);
+		$this->set('categories', $categories);
+		
+		$products = $this->DrexCartProductsToCategory->getProductsInCategory($parentNodeId);
+		$this->set('products', $products);
+		
+		$this->set('currentCategory', $this->DrexCartCategory->getCategoryById($parentNodeId));
+	}
 }
