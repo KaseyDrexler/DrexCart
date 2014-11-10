@@ -18,7 +18,7 @@ $this->Html->addCrumb('My Addresses');
 	<?php 
 	if (isset($addresses)) {
 		foreach($addresses as $address) {
-
+			$default = false;
 		?>
 		<tr>
 			<td><?php echo $address['DrexCartAddress']['firstname'] . ' ' . $address['DrexCartAddress']['lastname']; ?></td>
@@ -29,14 +29,16 @@ $this->Html->addCrumb('My Addresses');
 			<td><?php 
 				if ($userManager->getBillingAddress()['DrexCartAddress']['id']==$address['DrexCartAddress']['id']) {
 					echo '<span class="label label-success">Default Billing</span> ';
+					$default = true;
 				}
 				if ($userManager->getShippingAddress()['DrexCartAddress']['id']==$address['DrexCartAddress']['id']) {
 					echo '<span class="label label-success">Default Shipping</span> ';
+					$default = true;
 				}
 			?></td>
 			<td>
 				<?php echo $this->Html->link('Edit', 'javascript:loadAddressDetails('.$address['DrexCartAddress']['id'].');', array('class'=>'btn btn-default btn-xs')); ?>
-				<?php echo $this->Html->link('Delete', '/DrexCartUsers/addressesDelete/'.$address['DrexCartAddress']['id'], array('class'=>'btn btn-danger btn-xs')); ?>
+				<?php echo (!$default) ? $this->Html->link('Delete', '/DrexCartUsers/addressesDelete/'.$address['DrexCartAddress']['id'], array('class'=>'btn btn-danger btn-xs', 'confirm'=>'Are you sure?')) : ''; ?>
 			</td>
 		</tr>
 		<?php 

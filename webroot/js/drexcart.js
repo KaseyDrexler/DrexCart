@@ -3,9 +3,9 @@ function loadOrderDetails(orderId, userId) {
 	$.ajax('/DrexCartUsers/orderDetails/'+orderId,
 		   {success: function (data) {
 			   
-			   $('.modal').modal('show');
-			   $('.modal-title').html('Order Details');
-			   $('.modal-body').html(data);
+			   $('#modal-lg').modal('show');
+			   $('#modal-title-lg').html('Order Details');
+			   $('#modal-body-lg').html(data);
 		   		},
 		   	error: function () {
 		   		
@@ -13,14 +13,14 @@ function loadOrderDetails(orderId, userId) {
 		   	});
 }
 
-function loadAddressDetails($addressId) {
-	$.ajax('/DrexCartUsers/addressesEdit/'+$addressId,
+function loadAddressDetails(addressId) {
+	$.ajax('/DrexCartUsers/addressesEdit/'+addressId,
 			   {success: function (data) {
 				   
-				   $('.modal').modal('show');
+				   $('#modal-md').modal('show');
 
-				   $('.modal-title').html('Update Address');
-				   $('.modal-body').html(data);
+				   $('#modal-title-md').html('Update Address');
+				   $('#modal-body-md').html(data);
 			   		},
 			   	error: function () {
 			   		

@@ -80,6 +80,7 @@ class DrexCartUsersController extends DrexCartAppController {
 			// form submitted
 			$this->Session->setFlash('Address saved!', 'default', array('class'=>'alert alert-success'));
 				
+			$default = false;
 			
 			if (is_numeric($addressId)) {
 				// update
@@ -96,11 +97,23 @@ class DrexCartUsersController extends DrexCartAppController {
 					$this->set('saved', true);
 				}
 			}
-				
+			if ($this->request->data['DrexCartAddress']['default_billing_id']==1) {
+				$this->DrexCartUser->updateAll(array('billing_address_id'=>$this->DrexCartAddress->id),
+											   array('id'=>$this->userManager->getUserId()));
+				$default = true;
+			}
+			if ($this->request->data['DrexCartAddress']['default_shipping_id']==1) {
+				$this->DrexCartUser->updateAll(array('shipping_address_id'=>$this->DrexCartAddress->id),
+						array('id'=>$this->userManager->getUserId()));
+				$default = true;
+			}	
+			if ($default) {
+				$this->userManager->loginById($this->userManager->getUserId());
+			}
 		}
 		
 		if (is_numeric($addressId) && $addressId>0) {
-			$address = $this->DrexCartAddress->getAddressById($addressId);
+			$address = $this->DrexCartAddress->getAddressById($addressId, $this->userManager->getUserId());
 			$this->set('address', $address);
 			$this->request->data['DrexCartAddress'] = $address['DrexCartAddress'];
 		}

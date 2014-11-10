@@ -6,7 +6,7 @@ class DrexCartAddress extends DrexCartAppModel {
 		return $this->find('all', array('conditions'=>array('drex_cart_users_id'=>(int)$userId)));
 	}
 	
-	public function getAddressById($addressId=null) {
-		return $this->find('first', array('condition'=>array('id'=>(int)$addressId)));
+	public function getAddressById($addressId=null, $userId=null) {
+		return $this->find('first', array('conditions'=>array('id'=>(int)$addressId, 'drex_cart_users_id'=>(int)$userId)));
 	}
 }

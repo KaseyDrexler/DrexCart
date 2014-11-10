@@ -38,7 +38,7 @@ if (isset($updated) && $updated) {
 <div class="row">
 	<div class="col-md-12 text-right">
 		<?php echo $this->Js->submit('Update Order', array('url'=>'/DrexCartAdmin/orderStatusUpdate/'.$order['DrexCartOrder']['id'],
-														   'update'=>'.modal-body',
+														   'update'=>'#modal-body-lg',
 														   'buffer'=>false,
 														   'class'=>'btn btn-warning')); ?>
 	</div>

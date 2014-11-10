@@ -179,7 +179,7 @@ $this->Html->addCrumb('Order Details');
 																				  array('class'=>'btn btn-xs btn-warning pull-right',
 																				  		'buffer'=>false,
 																						'complete'=>'$(\'.modal\').modal(\'show\');$(\'.modal-title\').html(\'Order Status Update\');',
-																						'update'=>'.modal-body')); ?></h1>
+																						'update'=>'#modal-body-lg')); ?></h1>
 			</div>
 			<div class="panel-body">
 				

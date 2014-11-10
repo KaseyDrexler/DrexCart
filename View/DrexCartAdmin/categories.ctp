@@ -24,28 +24,29 @@ if ($currentCategory) {
 
 <table class="table table-hover">
 	<tr>
-		<th colspan="2"><b>Sub Categories</b> (<?php echo sizeof($categories); ?>)</th>
+		<th colspan="3"><b>Sub Categories</b> (<?php echo sizeof($categories); ?>)</th>
 	</tr>
 	<?php 
 	if (sizeof($categories)>0) {
 		foreach($categories as $category) {
 		?>
-		<tr onclick="document.location.href='/DrexCartAdmin/categories/<?php echo $category['DrexCartCategory']['id']; ?>';">
-			<td><?php echo $category['DrexCartCategory']['name']?></td>
-			<td><?php echo $category[0]['subNodeCount']; ?> Subcategories</td>
+		<tr>
+			<td onclick="document.location.href='/DrexCartAdmin/categories/<?php echo $category['DrexCartCategory']['id']; ?>';"><?php echo $category['DrexCartCategory']['name']?></td>
+			<td onclick="document.location.href='/DrexCartAdmin/categories/<?php echo $category['DrexCartCategory']['id']; ?>';"><?php echo $category[0]['subNodeCount']; ?> Subcategories</td>
+			<td><?php echo $this->Js->link('Edit', '/DrexCartAdmin/categoriesEdit/'.$category['DrexCartCategory']['id'], array('buffer'=>false, 'update'=>'#panel_right')); ?></td>
 		</tr>
 		<?php 
 		}
 	} else {
 	?>
 		<tr>
-			<td colspan="2" class="text-danger">No sub categories</td>
+			<td colspan="3" class="text-danger">No sub categories</td>
 		</tr>
 	<?php 
 	}
 	?>
 	<tr>
-		<th colspan="2"><b>Products</b> (<?php echo sizeof($products); ?>)</th>
+		<th colspan="3"><b>Products</b> (<?php echo sizeof($products); ?>)</th>
 	</tr>
 	<?php 
 	if (sizeof($products)>0) {
@@ -54,13 +55,14 @@ if ($currentCategory) {
 		<tr>
 			<td><?php echo $product['DrexCartProduct']['name']; ?></td>
 			<td></td>
+			<td></td>
 		</tr>
 		<?php 
 		}
 	} else {
 	?>
 		<tr>
-			<td colspan="2" class="text-danger">No products in this category</td>
+			<td colspan="3" class="text-danger">No products in this category</td>
 		</tr>
 	<?php 
 	}

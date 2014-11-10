@@ -370,4 +370,6 @@ class DrexCartAdminController extends DrexCartAppController {
 		
 		$this->set('currentCategory', $this->DrexCartCategory->getCategoryById($parentNodeId));
 	}
+	public function categoriesEdit($categoryId=0) {
+	}
 }
