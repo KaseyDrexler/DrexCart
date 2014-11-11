@@ -27,3 +27,18 @@ function loadAddressDetails(addressId) {
 			   		}
 			   	});
 }
+
+function loadGatewayProfileDetails(profileId) {
+	$.ajax('/DrexCartUsers/paymentProfilesEdit/'+profileId,
+			   {success: function (data) {
+				   
+				   $('#modal-md').modal('show');
+
+				   $('#modal-title-md').html('Update Payment Profile');
+				   $('#modal-body-md').html(data);
+			   		},
+			   	error: function () {
+			   		
+			   		}
+			   	});
+}

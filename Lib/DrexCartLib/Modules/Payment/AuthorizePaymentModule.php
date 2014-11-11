@@ -14,6 +14,7 @@ App::uses('ProfileTransAuthOnlyType', 'DrexCart.DrexCartLib/Modules/Payment');
 App::uses('ProfileTransactionType', 'DrexCart.DrexCartLib/Modules/Payment');
 App::uses('CreateCustomerProfileTransaction', 'DrexCart.DrexCartLib/Modules/Payment');
 App::uses('ProfileTransPriorAuthCaptureType', 'DrexCart.DrexCartLib/Modules/Payment');
+App::uses('DeleteCustomerPaymentProfile', 'DrexCart.DrexCartLib/Modules/Payment');
 
 
 App::uses('DriversLicenseType', 'DrexCart.DrexCartLib/PaymentGateways/Authorize');
@@ -132,7 +133,7 @@ class AuthorizePaymentModule implements PaymentModuleBase {
 			$this->DrexCartGatewayProfile->id = null;
 			$this->DrexCartGatewayProfile->save(array('DrexCartGatewayProfile'=>array('drex_cart_gateway_users_id'=>$gwUser['DrexCartGatewayUser']['id'],
 					'created_date'=>date('Y-m-d H:i:s'),
-					'account_number'=>'************'.substr($cardInfo['account_number'],12),
+					'account_number'=>'************'.substr($cardInfo['account_number'],strlen($cardInfo['account_number'])-4),
 					'expiration'=>$cardInfo['expiration'],
 					'code'=>'***',
 					'profile_id'=>$soap_response->CreateCustomerPaymentProfileResult->customerPaymentProfileId)));
@@ -140,8 +141,10 @@ class AuthorizePaymentModule implements PaymentModuleBase {
 		} else {
 			$errors = array();
 			if (!is_array($soap_response->CreateCustomerPaymentProfileResult->messages)) $soap_response->CreateCustomerPaymentProfileResult->messages = array($soap_response->CreateCustomerPaymentProfileResult->messages);
+			//print_r($soap_response->CreateCustomerPaymentProfileResult);
+			if (isset($soap_response->CreateCustomerPaymentProfileResult->messages->MessagesTypeMessage)) $soap_response->CreateCustomerPaymentProfileResult->messages = array($soap_response->CreateCustomerPaymentProfileResult->messages->MessagesTypeMessage);
 			foreach($soap_response->CreateCustomerPaymentProfileResult->messages as $message) {
-				$errors[] = $message->messageTypeMessage->text;
+				$errors[] = $message->MessagesTypeMessage->text;
 			}
 			$this->errors = $errors;
 			return false;
@@ -149,7 +152,26 @@ class AuthorizePaymentModule implements PaymentModuleBase {
 		
 	}
 	public function deleteCard($customerInformation, $cardInformation) {
+		// delete from authorize.net
+		$soap = new ServiceCustom((Configure::read('debug')>0) ? array('trace'=>1) : array(''), $this->wsdl_url);
 		
+		$parameters = new DeleteCustomerPaymentProfile(new MerchantAuthenticationType($this->login, $this->key), 
+													   $customerInformation, $cardInformation);
+		
+		$soap_response = $soap->DeleteCustomerPaymentProfile($parameters);
+		
+		
+		//pr($soap_response);
+		
+		if ($soap_response->DeleteCustomerPaymentProfileResult->resultCode=='Ok') {
+			// mark as deleted in our database
+			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+			$this->DrexCartGatewayProfile->create();
+			$this->DrexCartGatewayProfile->updateAll(array('deleted'=>1),
+													 array('profile_id'=>$cardInformation));
+			return true;
+		}
+		return false;
 	}
 	
 	public function authorizePayment($customerInformation, $profileInformation, $amount) {

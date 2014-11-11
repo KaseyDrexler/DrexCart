@@ -21,7 +21,7 @@ if ($currentCategory) {
 <?php 
 }
 ?>
-
+<p class="text-right"><?php echo $this->Js->link('<i class="fa fa-plus"></i> Add Category', '/DrexCartAdmin/categoriesEdit/', array('escape'=>false, 'buffer'=>false, 'update'=>'#panel_right')); ?></p>
 <table class="table table-hover">
 	<tr>
 		<th colspan="3"><b>Sub Categories</b> (<?php echo sizeof($categories); ?>)</th>

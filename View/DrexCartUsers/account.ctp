@@ -61,7 +61,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-12 text-right"><?php echo $this->Html->link('Manage Addresses', '/DrexCartUsers/addresses'); ?></div>
+			<div class="col-md-12 text-right"><?php echo $this->Html->link('<i class="fa fa-cog"></i> Manage Addresses', '/DrexCartUsers/addresses', array('escape'=>false)); ?></div>
 		</div>
 	</div>
 </div>
@@ -102,18 +102,19 @@
 	<div class="col-md-6">
 		<div class="panel panel-warning">
 			<div class="panel-heading">
-				<p class="panel-title">Order History <?php echo $this->Html->link('View All', '/DrexCartUsers/orders', array('class'=>'pull-right btn btn-link')); ?></p>
+				<p class="panel-title">Recent Order History <?php echo $this->Html->link('View All', '/DrexCartUsers/orders', array('class'=>'pull-right btn btn-link')); ?></p>
 			</div>
 			<div class="panel-body">
 				<?php 
-				$orders = $userManager->getOrders();
+				$orders = $userManager->getOrders(5);
+				//pr($orders);
 				?>
 				<table class="table table-condensed table-hover">
 					<tr>
 						<th><span style="font-size:10px;">Order ID</span></th>
 						<th><span style="font-size:10px;">Order Date</span></th>
 						<th><span style="font-size:10px;">Status</span></th>
-						<th><span style="font-size:10px;">Order Total</span></th>
+						<th class="text-right"><span style="font-size:10px;">Order Total</span></th>
 						
 					</tr>
 					<?php 
@@ -123,7 +124,7 @@
 						<td><span style="font-size:10px;"><?php echo $order['DrexCartOrder']['id']; ?></span></td>
 						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($order['DrexCartOrder']['created_date'])); ?></span></td>
 						<td><span style="font-size:10px;"><?php echo $order['DrexCartOrderStatus']['status_name']; ?></span></td>
-						<td><span style="font-size:10px;"><?php echo date('m/d/Y', strtotime($order['DrexCartOrderTotal']['amount'])); ?></span></td>
+						<td class="text-right"><span style="font-size:10px;">$<?php echo number_format($order['DrexCartOrderTotal']['amount'],2); ?></span></td>
 					</tr>
 					<?php 
 					}

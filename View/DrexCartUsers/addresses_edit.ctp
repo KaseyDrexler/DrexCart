@@ -13,7 +13,7 @@ if (isset($saved)) {
 <?php echo $this->Form->create('DrexCartAddress'); ?>
 <table width="100%" class="table">
 	<tr>
-		<th class="text-right" width="33%">Name:</th>
+		<th class="text-right" width="36%">Name:</th>
 		<td>
 		
 				<?php echo $this->Form->input('firstname', array('label'=>false, 'class'=>'form-control', 'placeholder'=>'First')); ?>
@@ -65,7 +65,7 @@ if (isset($saved)) {
 		
 	</tr>
 	<tr>
-		<th class="text-right" valign="top">Default Billing Address:</th>
+		<th class="text-right" valign="top">Default Shipping Address:</th>
 		<td colspan="2">
 		<?php echo $this->Form->checkbox('default_shipping_id', array('label'=>false, 'class'=>'form-control', 'value'=>1, 'checked'=>(isset($address) && $userManager->getShippingAddress()['DrexCartAddress']['id']==$address['DrexCartAddress']['id'] ? 'checked' : ''))); ?>
 		</td>

@@ -127,6 +127,54 @@ class DrexCartUsersController extends DrexCartAppController {
 	}
 	
 	public function paymentProfiles() {
+		if (isset($this->params['named']['delete'])) {
+			$this->DrexCartGatewayProfile = ClassRegistry::init('DrexCart.DrexCartGatewayProfile');
+			$this->DrexCartGatewayProfile->create();
+			
+			$check_profile = $this->DrexCartGatewayProfile->getPaymentProfile($this->userManager->getUserId(), $this->params['named']['delete']);
+			if ($check_profile) {
+				$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+				$this->DrexCartGateway->create();
+				$gateway = $this->DrexCartGateway->find('first', array('conditions'=>array('type'=>'authorize')));
+				$payment = new AuthorizePaymentModule($gateway['DrexCartGateway']['id'], $gateway['DrexCartGateway']['wsdl_url'], $gateway['DrexCartGateway']['api_login'], $gateway['DrexCartGateway']['api_key']);
+				if ($payment->deleteCard($check_profile['DrexCartGatewayUser']['profile_id'], $check_profile['DrexCartGatewayProfile']['profile_id'])) {
+					$this->Session->setFlash('Payment profile deleted', 'default', array('class'=>'alert alert-success'));
+				} 
+			}
+			
+			$this->redirect('/DrexCartUsers/paymentProfiles');
+		}
+	}
+	
+	public function paymentProfilesEdit($gatewayProfileId=null) {
+		if (!empty($this->request->data)) {
+			//pr($this->request->data);
+			$data = $this->request->data;
+			if ($data['DrexCartAddress']['billing_zip'] && $data['DrexCartGatewayProfile']['account_number'] && $data['DrexCartGatewayProfile']['expiration'] && $data['DrexCartGatewayProfile']['code']) {
+				// try to save card
+				$this->DrexCartGateway = ClassRegistry::init('DrexCart.DrexCartGateway');
+				$this->DrexCartGateway->create();
+				$gateway = $this->DrexCartGateway->find('first', array('conditions'=>array('type'=>'authorize')));
+				$user = $this->userManager->getUserData();
+				$payment = new AuthorizePaymentModule($gateway['DrexCartGateway']['id'], $gateway['DrexCartGateway']['wsdl_url'], $gateway['DrexCartGateway']['api_login'], $gateway['DrexCartGateway']['api_key']);
+				$userProfileId = $payment->createCustomer($user['DrexCartUser']);
+				
+				$data['DrexCartGatewayProfile']['expiration'] = $data['DrexCartGatewayProfile']['expiration']['year'] . '-' . $data['DrexCartGatewayProfile']['expiration']['month']; 
+				
+				$paymentProfileId = $payment->addCard($userProfileId, $data['DrexCartGatewayProfile'], $data['DrexCartAddress']);
+				if ($paymentProfileId) {
+					//$this->Session->setFlash('Card added successfully!', 'default', array('class'=>'alert alert-success'));
+					$this->set('updated', true);
+				} else {
+					$this->set('errors', $payment->errors);
+				}
+			}
+		}
+		
+		$this->set('gatewayProfileId', $gatewayProfileId);
+	}
+	
+	public function paymentProfilesEditAddress($gatewayProfileId=null) {
 		
 	}
 }

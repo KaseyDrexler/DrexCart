@@ -94,10 +94,10 @@ class DrexCartUserManager {
 		return $this->DrexCartAddress->find('all', array('conditions'=>array('drex_cart_users_id'=>$this->getUserId())));
 	}
 	
-	public function getOrders() {
+	public function getOrders($limit=null) {
 		$this->DrexCartOrder = ClassRegistry::init('DrexCart.DrexCartOrder');
 		$this->DrexCartOrder->create();
-		return $this->DrexCartOrder->getOrdersByUserId($this->getUserId());
+		return $this->DrexCartOrder->getOrdersByUserId($this->getUserId(), $limit);
 	}
 	
 	public function getUserData() {
