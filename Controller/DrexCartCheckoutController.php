@@ -60,7 +60,7 @@ class DrexCartCheckoutController extends DrexCartAppController {
 				unset($this->DrexCartOrder->validate['billing_state']);
 				unset($this->DrexCartOrder->validate['billing_zip']);
 				unset($this->DrexCartOrder->validate['billing_phone']);
-				$billing_address = $this->DrexCartAddress->getAddressById($this->request->data['DrexCartOrder']['default_billing_id']);
+				$billing_address = $this->DrexCartAddress->getAddressById($this->request->data['DrexCartOrder']['default_billing_id'], $this->userManager->getUserId());
 				if ($billing_address) {
 					$this->request->data['DrexCartOrder']['billing_firstname'] = $billing_address['DrexCartAddress']['firstname'];
 					$this->request->data['DrexCartOrder']['billing_lastname'] = $billing_address['DrexCartAddress']['lastname'];
@@ -80,7 +80,8 @@ class DrexCartCheckoutController extends DrexCartAppController {
 				unset($this->DrexCartOrder->validate['shipping_city']);
 				unset($this->DrexCartOrder->validate['shipping_state']);
 				unset($this->DrexCartOrder->validate['shipping_zip']);
-				$shipping_address = $this->DrexCartAddress->getAddressById($this->request->data['DrexCartOrder']['default_shipping_id']);
+				$shipping_address = $this->DrexCartAddress->getAddressById($this->request->data['DrexCartOrder']['default_shipping_id'], $this->userManager->getUserId());
+				
 				if ($shipping_address) {
 					$this->request->data['DrexCartOrder']['shipping_firstname'] = $shipping_address['DrexCartAddress']['firstname'];
 					$this->request->data['DrexCartOrder']['shipping_lastname'] = $shipping_address['DrexCartAddress']['lastname'];
