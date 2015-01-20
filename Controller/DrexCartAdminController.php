@@ -370,6 +370,51 @@ class DrexCartAdminController extends DrexCartAppController {
 		
 		$this->set('currentCategory', $this->DrexCartCategory->getCategoryById($parentNodeId));
 	}
-	public function categoriesEdit($categoryId=0) {
+	
+	public function categoriesEdit($categoryId=0, $parentCategoryId=null) {
+		$this->DrexCartCategory = ClassRegistry::init('DrexCart.DrexCartCategory');
+		$this->DrexCartCategory->create();
+			
+		if (!empty($this->request->data)) {
+			if ($categoryId) {
+				$this->DrexCartCategory->id = $categoryId;
+			} else {
+				$this->DrexCartCategory->id = null;
+			}
+			$this->DrexCartCategory->save($this->request->data);
+			$this->set('updated', true);
+		}
+		
+		if ($categoryId) {
+			$category = $this->DrexCartCategory->getCategoryById($categoryId);
+			$this->request->data['DrexCartCategory'] = $category['DrexCartCategory'];
+		} else if ($parentCategoryId) {
+			if (!isset($this->request->data['DrexCartCategory'])) $this->request->data['DrexCartCategory'] = array();
+			$this->request->data['DrexCartCategory']['parent_categories_id'] = $parentCategoryId;
+		}
+		
+		$this->set('categoryId', $categoryId);
+		$this->set('categories', $this->DrexCartCategory->getAllCategoriesForSelect());
 	}
+	
+	public function categoriesAddProduct($categoryId=0) {
+		if (!empty($this->request->data)) {
+			$this->DrexCartProductsToCategory = ClassRegistry::init('DrexCart.DrexCartProductsToCategory');
+			$this->DrexCartProductsToCategory->create();
+			$this->DrexCartProductsToCategory->id = null;
+			$this->DrexCartProductsToCategory->save(array('DrexCartProductsToCategory'=>array('categories_id'=>$categoryId, 'products_id'=>$this->request->data['DrexCartProductsToCategory']['products_id'])));
+			$this->set('updated', true);
+		}
+		
+		$this->DrexCartProduct = ClassRegistry::init('DrexCart.DrexCartProduct');
+		$this->DrexCartProduct->create();
+		$products = $this->DrexCartProduct->getAllProducts(array('DrexCartProduct.enabled'=>'1', 'DrexCartProduct.visible'=>'1'));
+		$new_products = array();
+		foreach($products as $product) {
+			$new_products[$product['DrexCartProduct']['id']] = $product['DrexCartProduct']['name'];
+		}
+		$this->set('products', $new_products);
+		$this->set('categoryId', $categoryId);
+	}
+	
 }

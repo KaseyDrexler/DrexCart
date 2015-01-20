@@ -20,7 +20,7 @@
 	<tr>
 		<th>Gateway Type:</th>
 		<td style="width:20px;"></td>
-		<td><?php echo $this->Form->input('type', array('label'=>false, 'class'=>'form-control')); ?></td>
+		<td><?php echo $this->Form->select('type', array('authorize'=>'Authorize.net', 'paypal'=>'PayPal'), array('label'=>false, 'class'=>'form-control')); ?></td>
 	</tr>
 	<tr>
 		<td colspan="3" style="height:10px;"></td>

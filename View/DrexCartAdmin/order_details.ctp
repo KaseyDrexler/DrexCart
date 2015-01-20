@@ -178,7 +178,7 @@ $this->Html->addCrumb('Order Details');
 																				  '/DrexCartAdmin/orderStatusUpdate/'.$order['DrexCartOrder']['id'],
 																				  array('class'=>'btn btn-xs btn-warning pull-right',
 																				  		'buffer'=>false,
-																						'complete'=>'$(\'.modal\').modal(\'show\');$(\'.modal-title\').html(\'Order Status Update\');',
+																						'complete'=>'$(\'.drexcart-modal-lg\').modal(\'show\');$(\'.modal-title\').html(\'Order Status Update\');',
 																						'update'=>'#modal-body-lg')); ?></h1>
 			</div>
 			<div class="panel-body">

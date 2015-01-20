@@ -19,4 +19,17 @@ class DrexCartCategory extends DrexCartAppModel {
 		}
 		return $results;
 	}
+	
+	public function getAllCategories() {
+		return $this->find('all');
+	}
+	
+	public function getAllCategoriesForSelect() {
+		$list = array();
+		$categories = $this->getAllCategories();
+		foreach($categories as $category) {
+			$list[$category['DrexCartCategory']['id']] = $category['DrexCartCategory']['name'];
+		}
+		return $list;
+	}
 }

@@ -43,6 +43,9 @@ class DrexCartAppController extends AppController {
 		// user manager
 		$this->loadUserManager();
 		
+		
+		// load category information
+		$this->loadCategories();
 	}
 
 	private function loadUserManager() {
@@ -68,6 +71,8 @@ class DrexCartAppController extends AppController {
 		$this->set('cart', $this->cart);
 		$this->set('cart_products', $this->cart->getProducts());
 	}
-	
+	private function loadCategories() {
+		
+	}
 	
 }
