@@ -26,27 +26,42 @@ Install instructions
 	
 Current Todo List 10/22/2014:
 Checkout Pages and My Account are being worked on now. Estimated complete date for those two items is 11/5/2014.
+UPDATED: 1/26/2015 Had a couple months off, but starting back up again. Shooting for an updated completion date of March 2015.  
+Need to finish more root functionality and then come back around and pretty it up.
 
 
 
 Checkout Pages
 * collect Billing Info (inc cc)
+  [DONE]
 * collect shipping info if needed
+  [DONE]
 * confirm order
+  [DONE]
 * place/success
+  [DONE]
 * sign in/create account
+  [DONE]
 * Payment Gateway Integration
+  [Authorize.net Integration Complete]
 * Shipping Integration
+  [Flat shipping rate only right now]
 
 My Account
 * Addresses
+  [DONE]
 * Orders
+  [DONE]
 * Change email address
+  [DONE]
 * change password
+  [DONE]
 
 Categories
 * Edit categories
+  [DONE]
 * Assign Products
+  [DONE]
 * Front side category navigation
 * Category images?
 

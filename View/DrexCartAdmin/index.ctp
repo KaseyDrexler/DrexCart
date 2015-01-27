@@ -18,8 +18,10 @@ if (sizeof($gateways)==0) {
 				</p>
 			</div>
 			<div class="panel-body">
+				<span class="pull-right text-muted">Last 30 days</span>
 				<p><b>Number of Orders:</b> <?php echo $order_summary['num_orders']; ?></p>
 				<p><b>Total Revenue:</b> $<?php echo number_format($order_summary['totals'],2); ?></p>
+				
 				<div id="saleschart" class="chart" style="height:150px;">
 					
 				</div>
@@ -35,7 +37,10 @@ if (sizeof($gateways)==0) {
 				
 			</div>
 			<div class="panel-body">
+				<span class="pull-right text-muted">Last 30 days</span>
 				<p><b>Number of Users:</b> <?php echo $num_users; ?></p>
+				
+				
 				<div id="userschart" class="chart" style="height:150px;">
 					
 				</div>
